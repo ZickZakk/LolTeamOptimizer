@@ -1,0 +1,161 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+  <!-- EF Runtime content -->
+  <edmx:Runtime>
+    <!-- SSDL content -->
+    <edmx:StorageModels>
+    <Schema Namespace="DataModel.Store" Alias="Self" Provider="System.Data.SqlClient" ProviderManifestToken="2012" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+  <EntityContainer Name="DataModelStoreContainer">
+    <EntitySet Name="Champions" EntityType="DataModel.Store.Champions" store:Type="Tables" Schema="dbo" />
+    <EntitySet Name="IsStrongAgainstSet" EntityType="DataModel.Store.IsStrongAgainstSet" store:Type="Tables" Schema="dbo" />
+    <AssociationSet Name="ChampionIsStrongAgainst" Association="DataModel.Store.ChampionIsStrongAgainst">
+      <End Role="Champion" EntitySet="Champions" />
+      <End Role="IsStrongAgainst" EntitySet="IsStrongAgainstSet" />
+    </AssociationSet>
+    <AssociationSet Name="OtherChampionIsStrongAgainst" Association="DataModel.Store.OtherChampionIsStrongAgainst">
+      <End Role="Champion" EntitySet="Champions" />
+      <End Role="IsStrongAgainst" EntitySet="IsStrongAgainstSet" />
+    </AssociationSet>
+  </EntityContainer>
+  <EntityType Name="Champions">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="Name" Type="nvarchar(max)" Nullable="false" />
+  </EntityType>
+  <EntityType Name="IsStrongAgainstSet">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="Rating" Type="int" Nullable="false" />
+    <Property Name="Champion_Id" Type="int" Nullable="false" />
+    <Property Name="OtherChampion_Id" Type="int" Nullable="false" />
+  </EntityType>
+  <Association Name="ChampionIsStrongAgainst">
+    <End Role="Champion" Type="DataModel.Store.Champions" Multiplicity="1" />
+    <End Role="IsStrongAgainst" Type="DataModel.Store.IsStrongAgainstSet" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Champion">
+        <PropertyRef Name="Id" />
+      </Principal>
+      <Dependent Role="IsStrongAgainst">
+        <PropertyRef Name="Champion_Id" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="OtherChampionIsStrongAgainst">
+    <End Role="Champion" Type="DataModel.Store.Champions" Multiplicity="1" />
+    <End Role="IsStrongAgainst" Type="DataModel.Store.IsStrongAgainstSet" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Champion">
+        <PropertyRef Name="Id" />
+      </Principal>
+      <Dependent Role="IsStrongAgainst">
+        <PropertyRef Name="OtherChampion_Id" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+</Schema></edmx:StorageModels>
+    <!-- CSDL content -->
+    <edmx:ConceptualModels>
+      <Schema Namespace="DataModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+        <EntityContainer Name="Database" annotation:LazyLoadingEnabled="true" >
+          <EntitySet Name="Champions" EntityType="DataModel.Champion" />
+          <EntitySet Name="IsStrongAgainstSet" EntityType="DataModel.IsStrongAgainst" />
+          <AssociationSet Name="ChampionIsStrongAgainst" Association="DataModel.ChampionIsStrongAgainst">
+            <End Role="Champion" EntitySet="Champions" />
+            <End Role="IsStrongAgainst" EntitySet="IsStrongAgainstSet" />
+          </AssociationSet>
+          <AssociationSet Name="OtherChampionIsStrongAgainst" Association="DataModel.OtherChampionIsStrongAgainst">
+            <End Role="Champion" EntitySet="Champions" />
+            <End Role="IsStrongAgainst" EntitySet="IsStrongAgainstSet" />
+          </AssociationSet>
+        </EntityContainer>
+        <EntityType Name="Champion">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Name" Type="String" Nullable="false" />
+          <NavigationProperty Name="IsStrongAgainst" Relationship="DataModel.ChampionIsStrongAgainst" FromRole="Champion" ToRole="IsStrongAgainst" />
+        </EntityType>
+        <EntityType Name="IsStrongAgainst">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Rating" Type="Int32" Nullable="false" />
+          <NavigationProperty Name="Champion" Relationship="DataModel.ChampionIsStrongAgainst" FromRole="IsStrongAgainst" ToRole="Champion" />
+          <NavigationProperty Name="OtherChampion" Relationship="DataModel.OtherChampionIsStrongAgainst" FromRole="IsStrongAgainst" ToRole="Champion" />
+        </EntityType>
+        <Association Name="ChampionIsStrongAgainst">
+          <End Type="DataModel.Champion" Role="Champion" Multiplicity="1" />
+          <End Type="DataModel.IsStrongAgainst" Role="IsStrongAgainst" Multiplicity="*" />
+        </Association>
+        <Association Name="OtherChampionIsStrongAgainst">
+          <End Type="DataModel.Champion" Role="Champion" Multiplicity="1" />
+          <End Type="DataModel.IsStrongAgainst" Role="IsStrongAgainst" Multiplicity="*" />
+        </Association>
+      </Schema>
+    </edmx:ConceptualModels>
+    <!-- C-S mapping content -->
+    <edmx:Mappings>
+    <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
+  <EntityContainerMapping StorageEntityContainer="DataModelStoreContainer" CdmEntityContainer="Database">
+    <EntitySetMapping Name="Champions">
+      <EntityTypeMapping TypeName="IsTypeOf(DataModel.Champion)">
+        <MappingFragment StoreEntitySet="Champions">
+          <ScalarProperty Name="Id" ColumnName="Id" />
+          <ScalarProperty Name="Name" ColumnName="Name" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="IsStrongAgainstSet">
+      <EntityTypeMapping TypeName="IsTypeOf(DataModel.IsStrongAgainst)">
+        <MappingFragment StoreEntitySet="IsStrongAgainstSet">
+          <ScalarProperty Name="Id" ColumnName="Id" />
+          <ScalarProperty Name="Rating" ColumnName="Rating" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <AssociationSetMapping Name="ChampionIsStrongAgainst" TypeName="DataModel.ChampionIsStrongAgainst" StoreEntitySet="IsStrongAgainstSet">
+      <EndProperty Name="Champion">
+        <ScalarProperty Name="Id" ColumnName="Champion_Id" />
+      </EndProperty>
+      <EndProperty Name="IsStrongAgainst">
+        <ScalarProperty Name="Id" ColumnName="Id" />
+      </EndProperty>
+    </AssociationSetMapping>
+    <AssociationSetMapping Name="OtherChampionIsStrongAgainst" TypeName="DataModel.OtherChampionIsStrongAgainst" StoreEntitySet="IsStrongAgainstSet">
+      <EndProperty Name="Champion">
+        <ScalarProperty Name="Id" ColumnName="OtherChampion_Id" />
+      </EndProperty>
+      <EndProperty Name="IsStrongAgainst">
+        <ScalarProperty Name="Id" ColumnName="Id" />
+      </EndProperty>
+    </AssociationSetMapping>
+  </EntityContainerMapping>
+</Mapping></edmx:Mappings>
+  </edmx:Runtime>
+  <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <Connection>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="MetadataArtifactProcessing" Value="EmbedInOutputAssembly" />
+      </DesignerInfoPropertySet>
+    </Connection>
+    <Options>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="ValidateOnBuild" Value="true" />
+        <DesignerProperty Name="EnablePluralization" Value="false" />
+        <DesignerProperty Name="IncludeForeignKeysInModel" Value="true" />
+        <DesignerProperty Name="UseLegacyProvider" Value="False" />
+        <DesignerProperty Name="CodeGenerationStrategy" Value="Kein" />
+      </DesignerInfoPropertySet>
+    </Options>
+    <!-- Diagram content (shape and connector positions) -->
+    <Diagrams></Diagrams>
+  </Designer>
+</edmx:Edmx>

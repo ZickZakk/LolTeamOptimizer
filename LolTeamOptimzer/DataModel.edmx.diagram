@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+ <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <edmx:Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <!-- Diagram content (shape and connector positions) -->
+    <edmx:Diagrams>
+      <Diagram DiagramId="66eabfa572674aa289be6c3d43eee75f" Name="Diagram1" >
+        <EntityTypeShape EntityType="DataModel.Champion" Width="1.5" PointX="6.125" PointY="1.75" />
+        <EntityTypeShape EntityType="DataModel.IsStrongAgainst" Width="1.5" PointX="9.375" PointY="1.75" />
+        <AssociationConnector Association="DataModel.ChampionIsStrongAgainst" />
+        <AssociationConnector Association="DataModel.OtherChampionIsStrongAgainst" />
+      </Diagram>
+    </edmx:Diagrams>
+  </edmx:Designer>
+</edmx:Edmx>
