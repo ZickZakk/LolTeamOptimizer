@@ -4,8 +4,12 @@ namespace LolTeamOptimizer
 
     using System;
     using System.Collections.Generic;
+    using System.Diagnostics.CodeAnalysis;
+    using System.Linq;
     using System.Net;
     using System.Text.RegularExpressions;
+
+    using HtmlAgilityPack;
 
     #endregion
 
@@ -13,50 +17,58 @@ namespace LolTeamOptimizer
     {
         #region Public Methods and Operators
 
-        public static IEnumerable<string> GatherChapions()
+        public static IEnumerable<string> GatherChapionNames()
         {
             var client = new WebClient();
             string downloadString = client.DownloadString("http://www.lolcounter.com/champions");
 
-            var regex = new Regex(@"find='\w+'");
-            var matches = regex.Matches(downloadString);
+            var doc = new HtmlDocument();
+            doc.LoadHtml(downloadString);
 
-            foreach (var match in matches)
+            var champNodes = doc.GetElementbyId("all-champions").Descendants("a").Where(div => div.Attributes["href"] != null).Where(div => div.Attributes["href"].Value.Contains("/champions/"));
+            foreach (var champNode in champNodes)
             {
-                yield return match.ToString()
-                    .Remove(0, 6)
-                    .Replace("'", "");
+                yield return champNode.Attributes["href"].Value.Split('/').Last();
             }
         }
 
-        public static IEnumerable<ChampionRelation> GatherStrongAgainst(string champion)
+        [SuppressMessage("StyleCop.CSharp.NamingRules", "SA1305:FieldNamesMustNotUseHungarianNotation", Justification = "Reviewed. Suppression is OK here.")]
+        public static IEnumerable<ChampionRelation> GatherStrongAgainst(string championName)
         {
             var client = new WebClient();
-            string downloadString = client.DownloadString(String.Concat("http://www.lolcounter.com/champions/", champion, "/strong"));
+            string downloadString = client.DownloadString(string.Concat("http://www.lolcounter.com/champions/", championName, "/strong"));
 
-            // Name freispliten
-            var regex = new Regex("<div class=\"name\">");
-            var matches = regex.Split(downloadString);
+            var doc = new HtmlDocument();
+            doc.LoadHtml(downloadString);
 
-            var name = matches[1].Split('<')[0];
+            var champNodes = doc.GetElementbyId("championPage").Descendants("div").Where(div => div.Attributes["class"] != null).Where(div => div.Attributes["class"].Value.Contains("theinfo"));
 
-            // UpVotes freispliten
-            regex = new Regex("<img src=\"/resources/img/up.png\">");
-            matches = regex.Split(matches[1]);
+            foreach (var champNode in champNodes)
+            {
+                // Gather Champ Name
+                var name = champNode.Element("a").Attributes["href"].Value.Split('/').Last().ToLower();
 
-            var upVotes = int.Parse(matches[1].Split('<')[0].Replace(",", ""));
+                // Gather Up-Votes
+                var upVotesString = ExtractVotesString(champNode, "tag_green");
 
-            // DownVotes freisplitten
-            regex = new Regex("<img src=\"/resources/img/down.png\">");
-            matches = regex.Split(matches[1]);
+                var upVotes = Convert.ToInt32(upVotesString);
 
-            var downVotes = int.Parse(matches[1].Split('<')[0].Replace(",", ""));
+                // Gather Up-Votes
+                var downVotesString = ExtractVotesString(champNode, "tag_red");
 
-            yield return new ChampionRelation
-                         {
-                             ChampionName = name,
-                             Value = upVotes - downVotes
-                         };
+                var downVotes = Convert.ToInt32(downVotesString);
+
+                yield return new ChampionRelation { ChampionName = name, Value = upVotes - downVotes };
+            }
+        }
+
+        private static string ExtractVotesString(HtmlNode champNode, string tag)
+        {
+            return champNode.Descendants("div")
+                .Single(div => div.Attributes["class"].Value.Contains(tag))
+                .InnerText.Split(new[] { '\"' }, StringSplitOptions.RemoveEmptyEntries)
+                .Last()
+                .Replace(",", string.Empty);
         }
 
         #endregion

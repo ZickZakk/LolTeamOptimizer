@@ -24,7 +24,7 @@
 
             Console.WriteLine("### Gathering Champions ###");
 
-            var champions = HtmlService.GatherChapions()
+            var champions = HtmlService.GatherChapionNames()
                 .ToList();
 
             foreach (var champion in champions)
@@ -35,21 +35,22 @@
                                        });
             }
 
+            dataBase.SaveChanges();
+
             Console.WriteLine("### Gathering IsStrongAgainst ###");
 
-            foreach (var champion in dataBase.Champions.Local)
+            foreach (var champion in dataBase.Champions)
             {
                 var relations = HtmlService.GatherStrongAgainst(champion.Name);
 
                 // Combine Champions, which appeard two times in the list and make IsStrong
-
                 var isStrongRelations = relations.GroupBy(relation => relation.ChampionName)
                     .Select(group => new IsStrongAgainst
                                      {
                                          Champion = champion,
                                          OtherChampion = dataBase.Champions.Single(champ => champ.Name.Equals(group.Key)),
                                          Rating = Convert.ToInt32(group.Average(relation => relation.Value))
-                                     });
+                                     }).ToList();
 
                 // Add Relations
                 dataBase.IsStrongAgainstSet.AddRange(isStrongRelations);
