@@ -27,5 +27,7 @@ namespace LolTeamOptimizer
     
         public virtual DbSet<Champion> Champions { get; set; }
         public virtual DbSet<IsStrongAgainst> IsStrongAgainstSet { get; set; }
+        public virtual DbSet<IsWeakAgainst> IsWeakAgainstSet { get; set; }
+        public virtual DbSet<GoesWellWith> GoesWellWithSet { get; set; }
     }
 }

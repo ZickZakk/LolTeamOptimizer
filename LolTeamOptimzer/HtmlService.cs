@@ -33,10 +33,10 @@ namespace LolTeamOptimizer
         }
 
         [SuppressMessage("StyleCop.CSharp.NamingRules", "SA1305:FieldNamesMustNotUseHungarianNotation", Justification = "Reviewed. Suppression is OK here.")]
-        public static IEnumerable<ChampionRelation> GatherStrongAgainst(string championName)
+        public static IEnumerable<ChampionRelation> GatherChampionRelations(string championName, string relationPageName)
         {
             var client = new WebClient();
-            string downloadString = client.DownloadString(string.Concat("http://www.lolcounter.com/champions/", championName, "/strong"));
+            string downloadString = client.DownloadString(string.Concat("http://www.lolcounter.com/champions/", championName, relationPageName));
 
             var doc = new HtmlDocument();
             doc.LoadHtml(downloadString);
@@ -65,6 +65,7 @@ namespace LolTeamOptimizer
         private static string ExtractVotesString(HtmlNode champNode, string tag)
         {
             return champNode.Descendants("div")
+                .Where(div => div.Attributes["class"] != null)
                 .Single(div => div.Attributes["class"].Value.Contains(tag))
                 .InnerText.Split(new[] { '\"' }, StringSplitOptions.RemoveEmptyEntries)
                 .Last()

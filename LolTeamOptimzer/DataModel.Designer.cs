@@ -1,4 +1,4 @@
-﻿// Die T4-Codegenerierung ist für Modell 'C:\Users\gjenschmischek\Desktop\LolTeamOptimizer\LolTeamOptimzer\DataModel.edmx' aktiviert. 
+﻿// Die T4-Codegenerierung ist für Modell 'C:\Daten\Studium\1. Semester\Algorithm Engineering\LoLTeamOptimizer\LolTeamOptimzer\DataModel.edmx' aktiviert. 
 // Um die Generierung von Legacycode zu aktivieren, ändern Sie den Wert der Designer-Eigenschaft 'Code Generation Strategy'
 // in 'Legacy ObjectContext'. Diese Eigenschaft wird im Eigenschaftenfenster angezeigt, wenn das Modell
 // im Designer geöffnet ist.

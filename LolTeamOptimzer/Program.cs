@@ -41,7 +41,7 @@
 
             foreach (var champion in dataBase.Champions)
             {
-                var relations = HtmlService.GatherStrongAgainst(champion.Name);
+                var relations = HtmlService.GatherChampionRelations(champion.Name, "/strong");
 
                 // Combine Champions, which appeard two times in the list and make IsStrong
                 var isStrongRelations = relations.GroupBy(relation => relation.ChampionName)
@@ -54,6 +54,34 @@
 
                 // Add Relations
                 dataBase.IsStrongAgainstSet.AddRange(isStrongRelations);
+
+                relations = HtmlService.GatherChampionRelations(champion.Name, "/weak");
+
+                // Combine Champions, which appeard two times in the list and make IsStrong
+                var isWeakRelations = relations.GroupBy(relation => relation.ChampionName)
+                    .Select(group => new IsWeakAgainst
+                    {
+                        Champion = champion,
+                        OtherChampion = dataBase.Champions.Single(champ => champ.Name.Equals(group.Key)),
+                        Rating = Convert.ToInt32(group.Average(relation => relation.Value))
+                    }).ToList();
+
+                // Add Relations
+                dataBase.IsWeakAgainstSet.AddRange(isWeakRelations);
+
+                relations = HtmlService.GatherChampionRelations(champion.Name, "/good");
+
+                // Combine Champions, which appeard two times in the list and make IsStrong
+                var goesWellRelations = relations.GroupBy(relation => relation.ChampionName)
+                    .Select(group => new GoesWellWith
+                    {
+                        Champion = champion,
+                        OtherChampion = dataBase.Champions.Single(champ => champ.Name.Equals(group.Key)),
+                        Rating = Convert.ToInt32(group.Average(relation => relation.Value))
+                    }).ToList();
+
+                // Add Relations
+                dataBase.GoesWellWithSet.AddRange(goesWellRelations);
             }
 
             Console.WriteLine("### Saving... ###");

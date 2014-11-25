@@ -12,20 +12,12 @@ namespace LolTeamOptimizer
     using System;
     using System.Collections.Generic;
     
-    public partial class Champion
+    public partial class IsWeakAgainst
     {
-        public Champion()
-        {
-            this.IsStrongAgainst = new HashSet<IsStrongAgainst>();
-            this.IsWeakAgainst = new HashSet<IsWeakAgainst>();
-            this.GoesWellWith = new HashSet<GoesWellWith>();
-        }
-    
         public int Id { get; set; }
-        public string Name { get; set; }
+        public int Rating { get; set; }
     
-        public virtual ICollection<IsStrongAgainst> IsStrongAgainst { get; set; }
-        public virtual ICollection<IsWeakAgainst> IsWeakAgainst { get; set; }
-        public virtual ICollection<GoesWellWith> GoesWellWith { get; set; }
+        public virtual Champion Champion { get; set; }
+        public virtual Champion OtherChampion { get; set; }
     }
 }

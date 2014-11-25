@@ -4,11 +4,17 @@
   <edmx:Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
     <!-- Diagram content (shape and connector positions) -->
     <edmx:Diagrams>
-      <Diagram DiagramId="66eabfa572674aa289be6c3d43eee75f" Name="Diagram1" >
+      <Diagram DiagramId="66eabfa572674aa289be6c3d43eee75f" Name="Diagram1" ZoomLevel="86" >
         <EntityTypeShape EntityType="DataModel.Champion" Width="1.5" PointX="6.125" PointY="1.75" />
         <EntityTypeShape EntityType="DataModel.IsStrongAgainst" Width="1.5" PointX="9.375" PointY="1.75" />
         <AssociationConnector Association="DataModel.ChampionIsStrongAgainst" />
         <AssociationConnector Association="DataModel.OtherChampionIsStrongAgainst" />
+        <EntityTypeShape EntityType="DataModel.IsWeakAgainst" Width="1.5" PointX="2.375" PointY="1.625" />
+        <AssociationConnector Association="DataModel.ChampionIsWeakAgainst" />
+        <AssociationConnector Association="DataModel.ChampionIsWeakAgainst1" />
+        <EntityTypeShape EntityType="DataModel.GoesWellWith" Width="1.5" PointX="4.25" PointY="0.5" />
+        <AssociationConnector Association="DataModel.ChampionGoesWellWith" />
+        <AssociationConnector Association="DataModel.ChampionGoesWellWith1" />
       </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>
