@@ -18,13 +18,18 @@ namespace LolTeamOptimizer
         {
             // GatherData();
 
+            TestOptimization();
+        }
+
+        private static void TestOptimization()
+        {
             var dataBase = new Database();
 
-            var thresh = dataBase.Champions.Find(96);
-            var lucian = dataBase.Champions.Find(54);
-            var maokai = dataBase.Champions.Find(59);
-            var jarvan = dataBase.Champions.Find(37);
-            var orianna = dataBase.Champions.Find(71);
+            var thresh = dataBase.Champions.Single(champ => champ.Name == "thresh");
+            var lucian = dataBase.Champions.Single(champ => champ.Name == "lucian");
+            var maokai = dataBase.Champions.Single(champ => champ.Name == "maokai");
+            var jarvan = dataBase.Champions.Single(champ => champ.Name == "jarvan-iv");
+            var orianna = dataBase.Champions.Single(champ => champ.Name == "orianna");
 
             var enemies = new List<Champion> { thresh, lucian, maokai, jarvan, orianna };
 
@@ -35,6 +40,7 @@ namespace LolTeamOptimizer
             var line = string.Join(", ", team.Select(champ => champ.Name));
 
             Console.WriteLine("Best Team: " + line);
+            Console.ReadKey();
         }
 
         private static void GatherData()

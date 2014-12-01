@@ -47,7 +47,7 @@ namespace LolTeamOptimizer.Optimizer
             {
                 foreach (var enemyChamp in enemyChamps)
                 {
-                    var relation = champ.IsWeakAgainst.FirstOrDefault(weak => weak.OtherChampion.Equals(enemyChamp));
+                    var relation = champ.IsWeakAgainst.FirstOrDefault(weak => weak.OtherChampion.Id == enemyChamp.Id);
 
                     if (relation != null)
                     {
@@ -67,7 +67,7 @@ namespace LolTeamOptimizer.Optimizer
             {
                 foreach (var enemyChamp in enemyChamps)
                 {
-                    var relation = champ.IsStrongAgainst.FirstOrDefault(strong => strong.OtherChampion.Equals(enemyChamp));
+                    var relation = champ.IsStrongAgainst.FirstOrDefault(strong => strong.OtherChampion.Id == enemyChamp.Id);
 
                     if (relation != null)
                     {
