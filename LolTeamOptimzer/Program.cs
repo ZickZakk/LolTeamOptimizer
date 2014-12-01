@@ -1,4 +1,7 @@
-﻿namespace LolTeamOptimizer
+﻿using System.Collections.Generic;
+using LolTeamOptimizer.Optimizer;
+
+namespace LolTeamOptimizer
 {
     #region using
 
@@ -13,6 +16,29 @@
 
         private static void Main(string[] args)
         {
+            // GatherData();
+
+            var dataBase = new Database();
+
+            var thresh = dataBase.Champions.Find(96);
+            var lucian = dataBase.Champions.Find(54);
+            var maokai = dataBase.Champions.Find(59);
+            var jarvan = dataBase.Champions.Find(37);
+            var orianna = dataBase.Champions.Find(71);
+
+            var enemies = new List<Champion> { thresh, lucian, maokai, jarvan, orianna };
+
+            var state = new PickingState { EnemyPicks = enemies };
+
+            var team = TeamOptimizer.CalculateOptimalePicks(state);
+
+            var line = string.Join(", ", team.Select(champ => champ.Name));
+
+            Console.WriteLine("Best Team: " + line);
+        }
+
+        private static void GatherData()
+        {
             Console.WriteLine("### LoL-Counter Database Sync ###");
 
             var dataBase = new Database();
@@ -20,6 +46,8 @@
             Console.WriteLine("### Clearing Database ###");
 
             dataBase.Database.ExecuteSqlCommand("DELETE FROM [IsStrongAgainstSet]");
+            dataBase.Database.ExecuteSqlCommand("DELETE FROM [IsWeakAgainstSet]");
+            dataBase.Database.ExecuteSqlCommand("DELETE FROM [GoesWellWithSet]");
             dataBase.Database.ExecuteSqlCommand("DELETE FROM [Champions]");
 
             Console.WriteLine("### Gathering Champions ###");
@@ -30,9 +58,9 @@
             foreach (var champion in champions)
             {
                 dataBase.Champions.Add(new Champion
-                                       {
-                                           Name = champion
-                                       });
+                {
+                    Name = champion
+                });
             }
 
             dataBase.SaveChanges();
@@ -46,11 +74,11 @@
                 // Combine Champions, which appeard two times in the list and make IsStrong
                 var isStrongRelations = relations.GroupBy(relation => relation.ChampionName)
                     .Select(group => new IsStrongAgainst
-                                     {
-                                         Champion = champion,
-                                         OtherChampion = dataBase.Champions.Single(champ => champ.Name.Equals(group.Key)),
-                                         Rating = Convert.ToInt32(group.Average(relation => relation.Value))
-                                     }).ToList();
+                    {
+                        Champion = champion,
+                        OtherChampion = dataBase.Champions.Single(champ => champ.Name.Equals(@group.Key)),
+                        Rating = Convert.ToInt32(@group.Average(relation => relation.Value))
+                    }).ToList();
 
                 // Add Relations
                 dataBase.IsStrongAgainstSet.AddRange(isStrongRelations);
@@ -62,8 +90,8 @@
                     .Select(group => new IsWeakAgainst
                     {
                         Champion = champion,
-                        OtherChampion = dataBase.Champions.Single(champ => champ.Name.Equals(group.Key)),
-                        Rating = Convert.ToInt32(group.Average(relation => relation.Value))
+                        OtherChampion = dataBase.Champions.Single(champ => champ.Name.Equals(@group.Key)),
+                        Rating = Convert.ToInt32(@group.Average(relation => relation.Value))
                     }).ToList();
 
                 // Add Relations
@@ -76,8 +104,8 @@
                     .Select(group => new GoesWellWith
                     {
                         Champion = champion,
-                        OtherChampion = dataBase.Champions.Single(champ => champ.Name.Equals(group.Key)),
-                        Rating = Convert.ToInt32(group.Average(relation => relation.Value))
+                        OtherChampion = dataBase.Champions.Single(champ => champ.Name.Equals(@group.Key)),
+                        Rating = Convert.ToInt32(@group.Average(relation => relation.Value))
                     }).ToList();
 
                 // Add Relations
