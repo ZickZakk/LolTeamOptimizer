@@ -1,151 +1,153 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8" ?>
+
 <edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
   <!-- EF Runtime content -->
   <edmx:Runtime>
     <!-- SSDL content -->
     <edmx:StorageModels>
-    <Schema Namespace="DataModel.Store" Alias="Self" Provider="System.Data.SqlClient" ProviderManifestToken="2012" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
-  <EntityContainer Name="DataModelStoreContainer">
-    <EntitySet Name="Champions" EntityType="DataModel.Store.Champions" store:Type="Tables" Schema="dbo" />
-    <EntitySet Name="IsStrongAgainstSet" EntityType="DataModel.Store.IsStrongAgainstSet" store:Type="Tables" Schema="dbo" />
-    <EntitySet Name="IsWeakAgainstSet" EntityType="DataModel.Store.IsWeakAgainstSet" store:Type="Tables" Schema="dbo" />
-    <EntitySet Name="GoesWellWithSet" EntityType="DataModel.Store.GoesWellWithSet" store:Type="Tables" Schema="dbo" />
-    <AssociationSet Name="ChampionIsStrongAgainst" Association="DataModel.Store.ChampionIsStrongAgainst">
-      <End Role="Champion" EntitySet="Champions" />
-      <End Role="IsStrongAgainst" EntitySet="IsStrongAgainstSet" />
-    </AssociationSet>
-    <AssociationSet Name="OtherChampionIsStrongAgainst" Association="DataModel.Store.OtherChampionIsStrongAgainst">
-      <End Role="Champion" EntitySet="Champions" />
-      <End Role="IsStrongAgainst" EntitySet="IsStrongAgainstSet" />
-    </AssociationSet>
-    <AssociationSet Name="ChampionIsWeakAgainst" Association="DataModel.Store.ChampionIsWeakAgainst">
-      <End Role="Champion" EntitySet="Champions" />
-      <End Role="IsWeakAgainst" EntitySet="IsWeakAgainstSet" />
-    </AssociationSet>
-    <AssociationSet Name="ChampionIsWeakAgainst1" Association="DataModel.Store.ChampionIsWeakAgainst1">
-      <End Role="Champion" EntitySet="Champions" />
-      <End Role="IsWeakAgainst" EntitySet="IsWeakAgainstSet" />
-    </AssociationSet>
-    <AssociationSet Name="ChampionGoesWellWith" Association="DataModel.Store.ChampionGoesWellWith">
-      <End Role="Champion" EntitySet="Champions" />
-      <End Role="GoesWellWith" EntitySet="GoesWellWithSet" />
-    </AssociationSet>
-    <AssociationSet Name="ChampionGoesWellWith1" Association="DataModel.Store.ChampionGoesWellWith1">
-      <End Role="Champion" EntitySet="Champions" />
-      <End Role="GoesWellWith" EntitySet="GoesWellWithSet" />
-    </AssociationSet>
-  </EntityContainer>
-  <EntityType Name="Champions">
-    <Key>
-      <PropertyRef Name="Id" />
-    </Key>
-    <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
-    <Property Name="Name" Type="nvarchar(max)" Nullable="false" />
-  </EntityType>
-  <EntityType Name="IsStrongAgainstSet">
-    <Key>
-      <PropertyRef Name="Id" />
-    </Key>
-    <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
-    <Property Name="Rating" Type="int" Nullable="false" />
-    <Property Name="Champion_Id" Type="int" Nullable="false" />
-    <Property Name="OtherChampion_Id" Type="int" Nullable="false" />
-  </EntityType>
-  <EntityType Name="IsWeakAgainstSet">
-    <Key>
-      <PropertyRef Name="Id" />
-    </Key>
-    <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
-    <Property Name="Rating" Type="int" Nullable="false" />
-    <Property Name="Champion_Id" Type="int" Nullable="false" />
-    <Property Name="OtherChampion_Id" Type="int" Nullable="false" />
-  </EntityType>
-  <EntityType Name="GoesWellWithSet">
-    <Key>
-      <PropertyRef Name="Id" />
-    </Key>
-    <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
-    <Property Name="Rating" Type="int" Nullable="false" />
-    <Property Name="Champion_Id" Type="int" Nullable="false" />
-    <Property Name="OtherChampion_Id" Type="int" Nullable="false" />
-  </EntityType>
-  <Association Name="ChampionIsStrongAgainst">
-    <End Role="Champion" Type="DataModel.Store.Champions" Multiplicity="1" />
-    <End Role="IsStrongAgainst" Type="DataModel.Store.IsStrongAgainstSet" Multiplicity="*" />
-    <ReferentialConstraint>
-      <Principal Role="Champion">
-        <PropertyRef Name="Id" />
-      </Principal>
-      <Dependent Role="IsStrongAgainst">
-        <PropertyRef Name="Champion_Id" />
-      </Dependent>
-    </ReferentialConstraint>
-  </Association>
-  <Association Name="OtherChampionIsStrongAgainst">
-    <End Role="Champion" Type="DataModel.Store.Champions" Multiplicity="1" />
-    <End Role="IsStrongAgainst" Type="DataModel.Store.IsStrongAgainstSet" Multiplicity="*" />
-    <ReferentialConstraint>
-      <Principal Role="Champion">
-        <PropertyRef Name="Id" />
-      </Principal>
-      <Dependent Role="IsStrongAgainst">
-        <PropertyRef Name="OtherChampion_Id" />
-      </Dependent>
-    </ReferentialConstraint>
-  </Association>
-  <Association Name="ChampionIsWeakAgainst">
-    <End Role="Champion" Type="DataModel.Store.Champions" Multiplicity="1" />
-    <End Role="IsWeakAgainst" Type="DataModel.Store.IsWeakAgainstSet" Multiplicity="*" />
-    <ReferentialConstraint>
-      <Principal Role="Champion">
-        <PropertyRef Name="Id" />
-      </Principal>
-      <Dependent Role="IsWeakAgainst">
-        <PropertyRef Name="Champion_Id" />
-      </Dependent>
-    </ReferentialConstraint>
-  </Association>
-  <Association Name="ChampionIsWeakAgainst1">
-    <End Role="Champion" Type="DataModel.Store.Champions" Multiplicity="1" />
-    <End Role="IsWeakAgainst" Type="DataModel.Store.IsWeakAgainstSet" Multiplicity="*" />
-    <ReferentialConstraint>
-      <Principal Role="Champion">
-        <PropertyRef Name="Id" />
-      </Principal>
-      <Dependent Role="IsWeakAgainst">
-        <PropertyRef Name="OtherChampion_Id" />
-      </Dependent>
-    </ReferentialConstraint>
-  </Association>
-  <Association Name="ChampionGoesWellWith">
-    <End Role="Champion" Type="DataModel.Store.Champions" Multiplicity="1" />
-    <End Role="GoesWellWith" Type="DataModel.Store.GoesWellWithSet" Multiplicity="*" />
-    <ReferentialConstraint>
-      <Principal Role="Champion">
-        <PropertyRef Name="Id" />
-      </Principal>
-      <Dependent Role="GoesWellWith">
-        <PropertyRef Name="Champion_Id" />
-      </Dependent>
-    </ReferentialConstraint>
-  </Association>
-  <Association Name="ChampionGoesWellWith1">
-    <End Role="Champion" Type="DataModel.Store.Champions" Multiplicity="1" />
-    <End Role="GoesWellWith" Type="DataModel.Store.GoesWellWithSet" Multiplicity="*" />
-    <ReferentialConstraint>
-      <Principal Role="Champion">
-        <PropertyRef Name="Id" />
-      </Principal>
-      <Dependent Role="GoesWellWith">
-        <PropertyRef Name="OtherChampion_Id" />
-      </Dependent>
-    </ReferentialConstraint>
-  </Association>
-</Schema></edmx:StorageModels>
+      <Schema Namespace="DataModel.Store" Alias="Self" Provider="System.Data.SqlClient" ProviderManifestToken="2012" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+        <EntityContainer Name="DataModelStoreContainer">
+          <EntitySet Name="Champions" EntityType="DataModel.Store.Champions" store:Type="Tables" Schema="dbo" />
+          <EntitySet Name="IsStrongAgainstSet" EntityType="DataModel.Store.IsStrongAgainstSet" store:Type="Tables" Schema="dbo" />
+          <EntitySet Name="IsWeakAgainstSet" EntityType="DataModel.Store.IsWeakAgainstSet" store:Type="Tables" Schema="dbo" />
+          <EntitySet Name="GoesWellWithSet" EntityType="DataModel.Store.GoesWellWithSet" store:Type="Tables" Schema="dbo" />
+          <AssociationSet Name="ChampionIsStrongAgainst" Association="DataModel.Store.ChampionIsStrongAgainst">
+            <End Role="Champion" EntitySet="Champions" />
+            <End Role="IsStrongAgainst" EntitySet="IsStrongAgainstSet" />
+          </AssociationSet>
+          <AssociationSet Name="OtherChampionIsStrongAgainst" Association="DataModel.Store.OtherChampionIsStrongAgainst">
+            <End Role="Champion" EntitySet="Champions" />
+            <End Role="IsStrongAgainst" EntitySet="IsStrongAgainstSet" />
+          </AssociationSet>
+          <AssociationSet Name="ChampionIsWeakAgainst" Association="DataModel.Store.ChampionIsWeakAgainst">
+            <End Role="Champion" EntitySet="Champions" />
+            <End Role="IsWeakAgainst" EntitySet="IsWeakAgainstSet" />
+          </AssociationSet>
+          <AssociationSet Name="ChampionIsWeakAgainst1" Association="DataModel.Store.ChampionIsWeakAgainst1">
+            <End Role="Champion" EntitySet="Champions" />
+            <End Role="IsWeakAgainst" EntitySet="IsWeakAgainstSet" />
+          </AssociationSet>
+          <AssociationSet Name="ChampionGoesWellWith" Association="DataModel.Store.ChampionGoesWellWith">
+            <End Role="Champion" EntitySet="Champions" />
+            <End Role="GoesWellWith" EntitySet="GoesWellWithSet" />
+          </AssociationSet>
+          <AssociationSet Name="ChampionGoesWellWith1" Association="DataModel.Store.ChampionGoesWellWith1">
+            <End Role="Champion" EntitySet="Champions" />
+            <End Role="GoesWellWith" EntitySet="GoesWellWithSet" />
+          </AssociationSet>
+        </EntityContainer>
+        <EntityType Name="Champions">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Name" Type="nvarchar(max)" Nullable="false" />
+        </EntityType>
+        <EntityType Name="IsStrongAgainstSet">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Rating" Type="int" Nullable="false" />
+          <Property Name="Champion_Id" Type="int" Nullable="false" />
+          <Property Name="OtherChampion_Id" Type="int" Nullable="false" />
+        </EntityType>
+        <EntityType Name="IsWeakAgainstSet">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Rating" Type="int" Nullable="false" />
+          <Property Name="Champion_Id" Type="int" Nullable="false" />
+          <Property Name="OtherChampion_Id" Type="int" Nullable="false" />
+        </EntityType>
+        <EntityType Name="GoesWellWithSet">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Rating" Type="int" Nullable="false" />
+          <Property Name="Champion_Id" Type="int" Nullable="false" />
+          <Property Name="OtherChampion_Id" Type="int" Nullable="false" />
+        </EntityType>
+        <Association Name="ChampionIsStrongAgainst">
+          <End Role="Champion" Type="DataModel.Store.Champions" Multiplicity="1" />
+          <End Role="IsStrongAgainst" Type="DataModel.Store.IsStrongAgainstSet" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Champion">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="IsStrongAgainst">
+              <PropertyRef Name="Champion_Id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="OtherChampionIsStrongAgainst">
+          <End Role="Champion" Type="DataModel.Store.Champions" Multiplicity="1" />
+          <End Role="IsStrongAgainst" Type="DataModel.Store.IsStrongAgainstSet" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Champion">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="IsStrongAgainst">
+              <PropertyRef Name="OtherChampion_Id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="ChampionIsWeakAgainst">
+          <End Role="Champion" Type="DataModel.Store.Champions" Multiplicity="1" />
+          <End Role="IsWeakAgainst" Type="DataModel.Store.IsWeakAgainstSet" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Champion">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="IsWeakAgainst">
+              <PropertyRef Name="Champion_Id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="ChampionIsWeakAgainst1">
+          <End Role="Champion" Type="DataModel.Store.Champions" Multiplicity="1" />
+          <End Role="IsWeakAgainst" Type="DataModel.Store.IsWeakAgainstSet" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Champion">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="IsWeakAgainst">
+              <PropertyRef Name="OtherChampion_Id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="ChampionGoesWellWith">
+          <End Role="Champion" Type="DataModel.Store.Champions" Multiplicity="1" />
+          <End Role="GoesWellWith" Type="DataModel.Store.GoesWellWithSet" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Champion">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="GoesWellWith">
+              <PropertyRef Name="Champion_Id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="ChampionGoesWellWith1">
+          <End Role="Champion" Type="DataModel.Store.Champions" Multiplicity="1" />
+          <End Role="GoesWellWith" Type="DataModel.Store.GoesWellWithSet" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Champion">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="GoesWellWith">
+              <PropertyRef Name="OtherChampion_Id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+      </Schema>
+    </edmx:StorageModels>
     <!-- CSDL content -->
     <edmx:ConceptualModels>
       <Schema Namespace="DataModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
-        <EntityContainer Name="Database" annotation:LazyLoadingEnabled="true" >
+        <EntityContainer Name="Database" annotation:LazyLoadingEnabled="true">
           <EntitySet Name="Champions" EntityType="DataModel.Champion" />
           <EntitySet Name="IsStrongAgainstSet" EntityType="DataModel.IsStrongAgainst" />
           <AssociationSet Name="ChampionIsStrongAgainst" Association="DataModel.ChampionIsStrongAgainst">
@@ -240,90 +242,91 @@
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
     <edmx:Mappings>
-    <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
-  <EntityContainerMapping StorageEntityContainer="DataModelStoreContainer" CdmEntityContainer="Database">
-    <EntitySetMapping Name="Champions">
-      <EntityTypeMapping TypeName="IsTypeOf(DataModel.Champion)">
-        <MappingFragment StoreEntitySet="Champions">
-          <ScalarProperty Name="Id" ColumnName="Id" />
-          <ScalarProperty Name="Name" ColumnName="Name" />
-        </MappingFragment>
-      </EntityTypeMapping>
-    </EntitySetMapping>
-    <EntitySetMapping Name="IsStrongAgainstSet">
-      <EntityTypeMapping TypeName="IsTypeOf(DataModel.IsStrongAgainst)">
-        <MappingFragment StoreEntitySet="IsStrongAgainstSet">
-          <ScalarProperty Name="Id" ColumnName="Id" />
-          <ScalarProperty Name="Rating" ColumnName="Rating" />
-        </MappingFragment>
-      </EntityTypeMapping>
-    </EntitySetMapping>
-    <EntitySetMapping Name="IsWeakAgainstSet">
-      <EntityTypeMapping TypeName="IsTypeOf(DataModel.IsWeakAgainst)">
-        <MappingFragment StoreEntitySet="IsWeakAgainstSet">
-          <ScalarProperty Name="Id" ColumnName="Id" />
-          <ScalarProperty Name="Rating" ColumnName="Rating" />
-        </MappingFragment>
-      </EntityTypeMapping>
-    </EntitySetMapping>
-    <EntitySetMapping Name="GoesWellWithSet">
-      <EntityTypeMapping TypeName="IsTypeOf(DataModel.GoesWellWith)">
-        <MappingFragment StoreEntitySet="GoesWellWithSet">
-          <ScalarProperty Name="Id" ColumnName="Id" />
-          <ScalarProperty Name="Rating" ColumnName="Rating" />
-        </MappingFragment>
-      </EntityTypeMapping>
-    </EntitySetMapping>
-    <AssociationSetMapping Name="ChampionIsStrongAgainst" TypeName="DataModel.ChampionIsStrongAgainst" StoreEntitySet="IsStrongAgainstSet">
-      <EndProperty Name="Champion">
-        <ScalarProperty Name="Id" ColumnName="Champion_Id" />
-      </EndProperty>
-      <EndProperty Name="IsStrongAgainst">
-        <ScalarProperty Name="Id" ColumnName="Id" />
-      </EndProperty>
-    </AssociationSetMapping>
-    <AssociationSetMapping Name="OtherChampionIsStrongAgainst" TypeName="DataModel.OtherChampionIsStrongAgainst" StoreEntitySet="IsStrongAgainstSet">
-      <EndProperty Name="Champion">
-        <ScalarProperty Name="Id" ColumnName="OtherChampion_Id" />
-      </EndProperty>
-      <EndProperty Name="IsStrongAgainst">
-        <ScalarProperty Name="Id" ColumnName="Id" />
-      </EndProperty>
-    </AssociationSetMapping>
-    <AssociationSetMapping Name="ChampionIsWeakAgainst" TypeName="DataModel.ChampionIsWeakAgainst" StoreEntitySet="IsWeakAgainstSet">
-      <EndProperty Name="Champion">
-        <ScalarProperty Name="Id" ColumnName="Champion_Id" />
-      </EndProperty>
-      <EndProperty Name="IsWeakAgainst">
-        <ScalarProperty Name="Id" ColumnName="Id" />
-      </EndProperty>
-    </AssociationSetMapping>
-    <AssociationSetMapping Name="ChampionIsWeakAgainst1" TypeName="DataModel.ChampionIsWeakAgainst1" StoreEntitySet="IsWeakAgainstSet">
-      <EndProperty Name="Champion">
-        <ScalarProperty Name="Id" ColumnName="OtherChampion_Id" />
-      </EndProperty>
-      <EndProperty Name="IsWeakAgainst">
-        <ScalarProperty Name="Id" ColumnName="Id" />
-      </EndProperty>
-    </AssociationSetMapping>
-    <AssociationSetMapping Name="ChampionGoesWellWith" TypeName="DataModel.ChampionGoesWellWith" StoreEntitySet="GoesWellWithSet">
-      <EndProperty Name="Champion">
-        <ScalarProperty Name="Id" ColumnName="Champion_Id" />
-      </EndProperty>
-      <EndProperty Name="GoesWellWith">
-        <ScalarProperty Name="Id" ColumnName="Id" />
-      </EndProperty>
-    </AssociationSetMapping>
-    <AssociationSetMapping Name="ChampionGoesWellWith1" TypeName="DataModel.ChampionGoesWellWith1" StoreEntitySet="GoesWellWithSet">
-      <EndProperty Name="Champion">
-        <ScalarProperty Name="Id" ColumnName="OtherChampion_Id" />
-      </EndProperty>
-      <EndProperty Name="GoesWellWith">
-        <ScalarProperty Name="Id" ColumnName="Id" />
-      </EndProperty>
-    </AssociationSetMapping>
-  </EntityContainerMapping>
-</Mapping></edmx:Mappings>
+      <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
+        <EntityContainerMapping StorageEntityContainer="DataModelStoreContainer" CdmEntityContainer="Database">
+          <EntitySetMapping Name="Champions">
+            <EntityTypeMapping TypeName="IsTypeOf(DataModel.Champion)">
+              <MappingFragment StoreEntitySet="Champions">
+                <ScalarProperty Name="Id" ColumnName="Id" />
+                <ScalarProperty Name="Name" ColumnName="Name" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="IsStrongAgainstSet">
+            <EntityTypeMapping TypeName="IsTypeOf(DataModel.IsStrongAgainst)">
+              <MappingFragment StoreEntitySet="IsStrongAgainstSet">
+                <ScalarProperty Name="Id" ColumnName="Id" />
+                <ScalarProperty Name="Rating" ColumnName="Rating" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="IsWeakAgainstSet">
+            <EntityTypeMapping TypeName="IsTypeOf(DataModel.IsWeakAgainst)">
+              <MappingFragment StoreEntitySet="IsWeakAgainstSet">
+                <ScalarProperty Name="Id" ColumnName="Id" />
+                <ScalarProperty Name="Rating" ColumnName="Rating" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="GoesWellWithSet">
+            <EntityTypeMapping TypeName="IsTypeOf(DataModel.GoesWellWith)">
+              <MappingFragment StoreEntitySet="GoesWellWithSet">
+                <ScalarProperty Name="Id" ColumnName="Id" />
+                <ScalarProperty Name="Rating" ColumnName="Rating" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <AssociationSetMapping Name="ChampionIsStrongAgainst" TypeName="DataModel.ChampionIsStrongAgainst" StoreEntitySet="IsStrongAgainstSet">
+            <EndProperty Name="Champion">
+              <ScalarProperty Name="Id" ColumnName="Champion_Id" />
+            </EndProperty>
+            <EndProperty Name="IsStrongAgainst">
+              <ScalarProperty Name="Id" ColumnName="Id" />
+            </EndProperty>
+          </AssociationSetMapping>
+          <AssociationSetMapping Name="OtherChampionIsStrongAgainst" TypeName="DataModel.OtherChampionIsStrongAgainst" StoreEntitySet="IsStrongAgainstSet">
+            <EndProperty Name="Champion">
+              <ScalarProperty Name="Id" ColumnName="OtherChampion_Id" />
+            </EndProperty>
+            <EndProperty Name="IsStrongAgainst">
+              <ScalarProperty Name="Id" ColumnName="Id" />
+            </EndProperty>
+          </AssociationSetMapping>
+          <AssociationSetMapping Name="ChampionIsWeakAgainst" TypeName="DataModel.ChampionIsWeakAgainst" StoreEntitySet="IsWeakAgainstSet">
+            <EndProperty Name="Champion">
+              <ScalarProperty Name="Id" ColumnName="Champion_Id" />
+            </EndProperty>
+            <EndProperty Name="IsWeakAgainst">
+              <ScalarProperty Name="Id" ColumnName="Id" />
+            </EndProperty>
+          </AssociationSetMapping>
+          <AssociationSetMapping Name="ChampionIsWeakAgainst1" TypeName="DataModel.ChampionIsWeakAgainst1" StoreEntitySet="IsWeakAgainstSet">
+            <EndProperty Name="Champion">
+              <ScalarProperty Name="Id" ColumnName="OtherChampion_Id" />
+            </EndProperty>
+            <EndProperty Name="IsWeakAgainst">
+              <ScalarProperty Name="Id" ColumnName="Id" />
+            </EndProperty>
+          </AssociationSetMapping>
+          <AssociationSetMapping Name="ChampionGoesWellWith" TypeName="DataModel.ChampionGoesWellWith" StoreEntitySet="GoesWellWithSet">
+            <EndProperty Name="Champion">
+              <ScalarProperty Name="Id" ColumnName="Champion_Id" />
+            </EndProperty>
+            <EndProperty Name="GoesWellWith">
+              <ScalarProperty Name="Id" ColumnName="Id" />
+            </EndProperty>
+          </AssociationSetMapping>
+          <AssociationSetMapping Name="ChampionGoesWellWith1" TypeName="DataModel.ChampionGoesWellWith1" StoreEntitySet="GoesWellWithSet">
+            <EndProperty Name="Champion">
+              <ScalarProperty Name="Id" ColumnName="OtherChampion_Id" />
+            </EndProperty>
+            <EndProperty Name="GoesWellWith">
+              <ScalarProperty Name="Id" ColumnName="Id" />
+            </EndProperty>
+          </AssociationSetMapping>
+        </EntityContainerMapping>
+      </Mapping>
+    </edmx:Mappings>
   </edmx:Runtime>
   <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
   <Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">

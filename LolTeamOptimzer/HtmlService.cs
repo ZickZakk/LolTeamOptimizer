@@ -1,15 +1,20 @@
+#region Using
+
+using System;
+using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
+using System.Linq;
+using System.Net;
+
+using HtmlAgilityPack;
+
+#endregion
+
 namespace LolTeamOptimizer
 {
     #region using
 
-    using System;
-    using System.Collections.Generic;
-    using System.Diagnostics.CodeAnalysis;
-    using System.Linq;
-    using System.Net;
-    using System.Text.RegularExpressions;
-
-    using HtmlAgilityPack;
+    
 
     #endregion
 
@@ -20,7 +25,7 @@ namespace LolTeamOptimizer
         public static IEnumerable<string> GatherChapionNames()
         {
             var client = new WebClient();
-            string downloadString = client.DownloadString("http://www.lolcounter.com/champions");
+            var downloadString = client.DownloadString("http://www.lolcounter.com/champions");
 
             var doc = new HtmlDocument();
             doc.LoadHtml(downloadString);
@@ -36,7 +41,7 @@ namespace LolTeamOptimizer
         public static IEnumerable<ChampionRelation> GatherChampionRelations(string championName, string relationPageName)
         {
             var client = new WebClient();
-            string downloadString = client.DownloadString(string.Concat("http://www.lolcounter.com/champions/", championName, relationPageName));
+            var downloadString = client.DownloadString(string.Concat("http://www.lolcounter.com/champions/", championName, relationPageName));
 
             var doc = new HtmlDocument();
             doc.LoadHtml(downloadString);
@@ -64,12 +69,7 @@ namespace LolTeamOptimizer
 
         private static string ExtractVotesString(HtmlNode champNode, string tag)
         {
-            return champNode.Descendants("div")
-                .Where(div => div.Attributes["class"] != null)
-                .Single(div => div.Attributes["class"].Value.Contains(tag))
-                .InnerText.Split(new[] { '\"' }, StringSplitOptions.RemoveEmptyEntries)
-                .Last()
-                .Replace(",", string.Empty);
+            return champNode.Descendants("div").Where(div => div.Attributes["class"] != null).Single(div => div.Attributes["class"].Value.Contains(tag)).InnerText.Split(new[] { '\"' }, StringSplitOptions.RemoveEmptyEntries).Last().Replace(",", string.Empty);
         }
 
         #endregion

@@ -97,8 +97,12 @@
       <DependentUpon>DataModel.tt</DependentUpon>
     </Compile>
     <Compile Include="Optimizer\ChampComparer.cs" />
+    <Compile Include="Optimizer\ITeamOptimizer.cs" />
     <Compile Include="Optimizer\PickingState.cs" />
-    <Compile Include="Optimizer\TeamOptimizer.cs" />
+    <Compile Include="Optimizer\SimplexOptimizer.cs" />
+    <Compile Include="Optimizer\TeamValueCalculator.cs" />
+    <Compile Include="Optimizer\TeamValuePair.cs" />
+    <Compile Include="Optimizer\TryEverythingOptimizer.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
