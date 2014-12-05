@@ -96,13 +96,15 @@
     <Compile Include="IsWeakAgainst.cs">
       <DependentUpon>DataModel.tt</DependentUpon>
     </Compile>
-    <Compile Include="Optimizer\ChampComparer.cs" />
-    <Compile Include="Optimizer\ITeamOptimizer.cs" />
-    <Compile Include="Optimizer\PickingState.cs" />
-    <Compile Include="Optimizer\SimplexOptimizer.cs" />
-    <Compile Include="Optimizer\TeamValueCalculator.cs" />
-    <Compile Include="Optimizer\TeamValuePair.cs" />
-    <Compile Include="Optimizer\TryEverythingOptimizer.cs" />
+    <Compile Include="Optimizers\BaseClasses\BaseTeamOptimizer.cs" />
+    <Compile Include="Optimizers\Calculators\BooleanTeamValueCalculator.cs" />
+    <Compile Include="Optimizers\Calculators\ITeamValueCalculator.cs" />
+    <Compile Include="Optimizers\Interfaces\ITeamOptimizer.cs" />
+    <Compile Include="Optimizers\Common\PickingState.cs" />
+    <Compile Include="Optimizers\Implementations\SimplexOptimizer.cs" />
+    <Compile Include="Optimizers\Calculators\RealTeamValueCalculator.cs" />
+    <Compile Include="Optimizers\Common\TeamValuePair.cs" />
+    <Compile Include="Optimizers\Implementations\TryEverythingOptimizer.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

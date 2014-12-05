@@ -3,13 +3,22 @@
 using System.Collections.Generic;
 using System.Linq;
 
+using LolTeamOptimizer.Optimizers.BaseClasses;
+using LolTeamOptimizer.Optimizers.Calculators;
+using LolTeamOptimizer.Optimizers.Common;
+
 #endregion
 
-namespace LolTeamOptimizer.Optimizer
+namespace LolTeamOptimizer.Optimizers.Implementations
 {
-    public class TryEverythingOptimizer : ITeamOptimizer
+    public class TryEverythingOptimizer : BaseTeamOptimizer
     {
-        public IEnumerable<Champion> CalculateOptimalePicks(PickingState state)
+        public TryEverythingOptimizer()
+            : base(new RealTeamValueCalculator())
+        {
+        }
+
+        public override TeamValuePair CalculateOptimalePicks(PickingState state)
         {
             var database = new Database();
             var unavailableChampionIds = state.AlliedPicks.Union(state.Bans).Union(state.EnemyPicks).Select(champ => champ.Id);
@@ -22,7 +31,7 @@ namespace LolTeamOptimizer.Optimizer
 
             foreach (var champCombination in Combinations(availableChampions, 0, state.TeamSize - state.AlliedPicks.Count() - 1))
             {
-                var teamValue = TeamValueCalculator.CalculateTeamValue(champCombination, state.EnemyPicks);
+                var teamValue = this.teamValueCalculator.CalculateTeamValue(champCombination, state.EnemyPicks);
 
                 if (teamValue > bestTeamValue)
                 {
@@ -31,10 +40,8 @@ namespace LolTeamOptimizer.Optimizer
                 }
             }
 
-            return bestTeam;
+            return new TeamValuePair(bestTeam, bestTeamValue);
         }
-
-        
 
         private static IEnumerable<T[]> Combinations<T>(IList<T> argList, int argStart, int argIteration, List<int> argIndicies = null)
         {

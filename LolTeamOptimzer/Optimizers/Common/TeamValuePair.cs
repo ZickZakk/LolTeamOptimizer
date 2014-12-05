@@ -1,6 +1,10 @@
-﻿using System.Collections.Generic;
+﻿#region Using
 
-namespace LolTeamOptimizer.Optimizer
+using System.Collections.Generic;
+
+#endregion
+
+namespace LolTeamOptimizer.Optimizers.Common
 {
     public class TeamValuePair
     {

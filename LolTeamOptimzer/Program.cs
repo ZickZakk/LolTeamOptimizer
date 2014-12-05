@@ -4,15 +4,16 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
-using LolTeamOptimizer.Optimizer;
+using LolTeamOptimizer.Optimizers.Common;
+using LolTeamOptimizer.Optimizers.Implementations;
+using LolTeamOptimizer.Optimizers.Interfaces;
 
 #endregion
 
 namespace LolTeamOptimizer
 {
-    #region using
 
-    
+    #region using
 
     #endregion
 
@@ -42,11 +43,11 @@ namespace LolTeamOptimizer
             var state = new PickingState(3) { EnemyPicks = enemies };
 
             ITeamOptimizer optimizer = new SimplexOptimizer();
-            var team = optimizer.CalculateOptimalePicks(state).ToList();
+            var result = optimizer.CalculateOptimalePicks(state);
 
-            var line = string.Join(", ", team.Select(champ => champ.Name));
+            var line = string.Join(", ", result.Team.Select(champ => champ.Name));
 
-            Console.WriteLine("Best Team ({0}): " + line, TeamValueCalculator.CalculateTeamValue(team, enemies));
+            Console.WriteLine("Best Team ({0}): " + line, result.TeamValue);
             Console.ReadKey();
         }
 

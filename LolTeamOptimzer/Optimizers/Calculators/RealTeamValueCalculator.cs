@@ -1,11 +1,15 @@
-﻿using System.Collections.Generic;
+﻿#region Using
+
+using System.Collections.Generic;
 using System.Linq;
 
-namespace LolTeamOptimizer.Optimizer
+#endregion
+
+namespace LolTeamOptimizer.Optimizers.Calculators
 {
-    public class TeamValueCalculator
+    public class RealTeamValueCalculator : ITeamValueCalculator
     {
-        public static int CalculateTeamValue(IEnumerable<Champion> champs, IEnumerable<Champion> enemyChamps)
+        public int CalculateTeamValue(IEnumerable<Champion> champs, IEnumerable<Champion> enemyChamps)
         {
             var champions = champs as IList<Champion> ?? champs.ToList();
 
@@ -16,10 +20,10 @@ namespace LolTeamOptimizer.Optimizer
             }
 
             var enemyChampions = enemyChamps as IList<Champion> ?? enemyChamps.ToList();
-            return CalculateStrenghts(champions, enemyChampions) + CalculateSynergy(champions) - CalculateWeaknesses(champions, enemyChampions);
+            return this.CalculateStrenghts(champions, enemyChampions) + this.CalculateSynergy(champions) - this.CalculateWeaknesses(champions, enemyChampions);
         }
 
-        private static int CalculateWeaknesses(IEnumerable<Champion> champs, IEnumerable<Champion> enemyChamps)
+        private int CalculateWeaknesses(IEnumerable<Champion> champs, IEnumerable<Champion> enemyChamps)
         {
             var weaknesses = 0;
 
@@ -39,7 +43,7 @@ namespace LolTeamOptimizer.Optimizer
             return weaknesses;
         }
 
-        private static int CalculateStrenghts(IEnumerable<Champion> champs, IEnumerable<Champion> enemyChamps)
+        private int CalculateStrenghts(IEnumerable<Champion> champs, IEnumerable<Champion> enemyChamps)
         {
             var strenghts = 0;
 
@@ -59,7 +63,7 @@ namespace LolTeamOptimizer.Optimizer
             return strenghts;
         }
 
-        private static int CalculateSynergy(IList<Champion> champs)
+        private int CalculateSynergy(IList<Champion> champs)
         {
             var synergy = 0;
 
@@ -77,6 +81,6 @@ namespace LolTeamOptimizer.Optimizer
             }
 
             return synergy;
-        } 
+        }
     }
 }

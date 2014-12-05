@@ -12,9 +12,8 @@ using HtmlAgilityPack;
 
 namespace LolTeamOptimizer
 {
-    #region using
 
-    
+    #region using
 
     #endregion
 

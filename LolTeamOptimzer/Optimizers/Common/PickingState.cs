@@ -6,7 +6,7 @@ using System.Linq;
 
 #endregion
 
-namespace LolTeamOptimizer.Optimizer
+namespace LolTeamOptimizer.Optimizers.Common
 {
     public class PickingState
     {
