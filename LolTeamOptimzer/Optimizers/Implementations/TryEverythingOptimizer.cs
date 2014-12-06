@@ -31,7 +31,7 @@ namespace LolTeamOptimizer.Optimizers.Implementations
 
             foreach (var champCombination in Combinations(availableChampions, 0, state.TeamSize - state.AlliedPicks.Count() - 1))
             {
-                var teamValue = this.teamValueCalculator.CalculateTeamValue(champCombination, state.EnemyPicks);
+                var teamValue = this.teamValueCalculator.CalculateTeamValue(champCombination, state.EnemyPicks.ToList());
 
                 if (teamValue > bestTeamValue)
                 {

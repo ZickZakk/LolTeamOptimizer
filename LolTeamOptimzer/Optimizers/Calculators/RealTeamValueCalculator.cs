@@ -9,18 +9,15 @@ namespace LolTeamOptimizer.Optimizers.Calculators
 {
     public class RealTeamValueCalculator : ITeamValueCalculator
     {
-        public int CalculateTeamValue(IEnumerable<Champion> champs, IEnumerable<Champion> enemyChamps)
+        public int CalculateTeamValue(IList<Champion> champs, IList<Champion> enemyChamps)
         {
-            var champions = champs as IList<Champion> ?? champs.ToList();
-
             // Wenn doppelte champs
-            if (champions.GroupBy(n => n).Any(c => c.Count() > 1))
+            if (champs.GroupBy(n => n).Any(c => c.Count() > 1))
             {
                 return int.MinValue;
             }
 
-            var enemyChampions = enemyChamps as IList<Champion> ?? enemyChamps.ToList();
-            return this.CalculateStrenghts(champions, enemyChampions) + this.CalculateSynergy(champions) - this.CalculateWeaknesses(champions, enemyChampions);
+            return this.CalculateStrenghts(champs, enemyChamps) + this.CalculateSynergy(champs) - this.CalculateWeaknesses(champs, enemyChamps);
         }
 
         private int CalculateWeaknesses(IEnumerable<Champion> champs, IEnumerable<Champion> enemyChamps)

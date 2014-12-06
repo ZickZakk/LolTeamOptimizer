@@ -8,6 +8,6 @@ namespace LolTeamOptimizer.Optimizers.Calculators
 {
     public interface ITeamValueCalculator
     {
-        int CalculateTeamValue(IEnumerable<Champion> champs, IEnumerable<Champion> enemyChamps);
+        int CalculateTeamValue(IList<Champion> champs, IList<Champion> enemyChamps);
     }
 }

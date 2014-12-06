@@ -54,7 +54,7 @@ namespace LolTeamOptimizer.Optimizers.Implementations
                 // Wechsle den letzten Champ in dem Team aus
                 var team = availableChampions.Skip(schrittweite * i).Take(state.TeamSize).ToList();
 
-                simplexPoints.Add(new TeamValuePair(team, this.teamValueCalculator.CalculateTeamValue(team, state.EnemyPicks)));
+                simplexPoints.Add(new TeamValuePair(team, this.teamValueCalculator.CalculateTeamValue(team, state.EnemyPicks.ToList())));
             }
 
             var durchläufe = 0;
@@ -99,7 +99,7 @@ namespace LolTeamOptimizer.Optimizers.Implementations
 
                         simplexPoints.RemoveAt(i);
                         var team = teamKoordinaten.Select(integer => integerChampionMapping[integer]).ToList();
-                        simplexPoints.Add(new TeamValuePair(team, this.teamValueCalculator.CalculateTeamValue(team, state.EnemyPicks)));
+                        simplexPoints.Add(new TeamValuePair(team, this.teamValueCalculator.CalculateTeamValue(team, state.EnemyPicks.ToList())));
                     }
 
                     durchläufeSeitVerbesserung = 0;
@@ -124,8 +124,8 @@ namespace LolTeamOptimizer.Optimizers.Implementations
                 var neuesTeam = neuesTeamKoordinaten.Select(integer => integerChampionMapping[integer]).ToList();
 
                 // Berechne Wertungen zum vergleich
-                var mittelPunktWert = this.teamValueCalculator.CalculateTeamValue(mittelpunktTeam, state.EnemyPicks);
-                var neuesTeamWert = this.teamValueCalculator.CalculateTeamValue(neuesTeam, state.EnemyPicks);
+                var mittelPunktWert = this.teamValueCalculator.CalculateTeamValue(mittelpunktTeam.ToList(), state.EnemyPicks.ToList());
+                var neuesTeamWert = this.teamValueCalculator.CalculateTeamValue(neuesTeam, state.EnemyPicks.ToList());
 
                 // Neuer Punkt ist Verbesserung zum Mittelpunkt, aber keine Gesamtverbesserung
                 if (simplexPoints.First().TeamValue >= neuesTeamWert && neuesTeamWert >= mittelPunktWert)
@@ -150,7 +150,7 @@ namespace LolTeamOptimizer.Optimizers.Implementations
                     var doppeltNeuesTeam = doppeltNeuesTeamKoordinaten.Select(integer => integerChampionMapping[integer]).ToList();
 
                     // Wert bestimmen
-                    var doppeltNeuesTeamWert = this.teamValueCalculator.CalculateTeamValue(doppeltNeuesTeam, state.EnemyPicks);
+                    var doppeltNeuesTeamWert = this.teamValueCalculator.CalculateTeamValue(doppeltNeuesTeam, state.EnemyPicks.ToList());
 
                     if (doppeltNeuesTeamWert > neuesTeamWert)
                     {
@@ -186,7 +186,7 @@ namespace LolTeamOptimizer.Optimizers.Implementations
                     var doppeltNeuesTeam = doppeltNeuesTeamKoordinaten.Select(integer => integerChampionMapping[integer]).ToList();
 
                     // Wert bestimmen
-                    var doppeltNeuesTeamWert = this.teamValueCalculator.CalculateTeamValue(doppeltNeuesTeam, state.EnemyPicks);
+                    var doppeltNeuesTeamWert = this.teamValueCalculator.CalculateTeamValue(doppeltNeuesTeam, state.EnemyPicks.ToList());
 
                     // Ist gestauchter Wert jetzt besser?
                     if (doppeltNeuesTeamWert > Math.Min(neuesTeamWert, simplexPoints.Last().TeamValue))
@@ -208,7 +208,7 @@ namespace LolTeamOptimizer.Optimizers.Implementations
 
                         simplexPoints.RemoveAt(i);
                         var team = teamKoordinaten.Select(integer => integerChampionMapping[integer]).ToList();
-                        simplexPoints.Add(new TeamValuePair(team, this.teamValueCalculator.CalculateTeamValue(team, state.EnemyPicks)));
+                        simplexPoints.Add(new TeamValuePair(team, this.teamValueCalculator.CalculateTeamValue(team, state.EnemyPicks.ToList())));
                     }
                 }
             }
