@@ -2,6 +2,8 @@
 
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
+using System.Diagnostics;
 using System.Linq;
 
 using LolTeamOptimizer.Optimizers.Common;
@@ -33,21 +35,25 @@ namespace LolTeamOptimizer
             var dataBase = new Database();
 
             var thresh = dataBase.Champions.Single(champ => champ.Name == "thresh");
-            //var lucian = dataBase.Champions.Single(champ => champ.Name == "lucian");
+            var lucian = dataBase.Champions.Single(champ => champ.Name == "lucian");
             var maokai = dataBase.Champions.Single(champ => champ.Name == "maokai");
             var jarvan = dataBase.Champions.Single(champ => champ.Name == "jarvan-iv");
-            //var orianna = dataBase.Champions.Single(champ => champ.Name == "orianna");
+            var orianna = dataBase.Champions.Single(champ => champ.Name == "orianna");
 
-            var enemies = new List<Champion> { thresh, maokai, jarvan, /* jarvan, orianna */ };
+            var enemies = new List<Champion> { thresh, maokai, lucian, jarvan/*, orianna*/ };
 
-            var state = new PickingState(3) { EnemyPicks = enemies };
+            var state = new PickingState(enemies.Count) { EnemyPicks = enemies };
 
-            ITeamOptimizer optimizer = new SimplexOptimizer();
+            ITeamOptimizer optimizer = new BranchAndBoundCspOptimizer();
+            var watch = new Stopwatch();
+            watch.Start();
             var result = optimizer.CalculateOptimalePicks(state);
+            watch.Stop();
 
             var line = string.Join(", ", result.Team.Select(champ => champ.Name));
 
             Console.WriteLine("Best Team ({0}): " + line, result.TeamValue);
+            Console.WriteLine("Time: {0}", watch.Elapsed.TotalMilliseconds);
             Console.ReadKey();
         }
 

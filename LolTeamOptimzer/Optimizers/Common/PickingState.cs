@@ -12,11 +12,11 @@ namespace LolTeamOptimizer.Optimizers.Common
     {
         private readonly int teamSize;
 
-        private IEnumerable<Champion> alliedPicks = new List<Champion>();
+        private IList<Champion> alliedPicks = new List<Champion>();
 
-        private IEnumerable<Champion> bans = new List<Champion>();
+        private IList<Champion> bans = new List<Champion>();
 
-        private IEnumerable<Champion> enemyPicks = new List<Champion>();
+        private IList<Champion> enemyPicks = new List<Champion>();
 
         public PickingState(int teamSize)
         {
@@ -36,7 +36,7 @@ namespace LolTeamOptimizer.Optimizers.Common
             }
         }
 
-        public IEnumerable<Champion> Bans
+        public IList<Champion> Bans
         {
             get
             {
@@ -54,7 +54,7 @@ namespace LolTeamOptimizer.Optimizers.Common
             }
         }
 
-        public IEnumerable<Champion> EnemyPicks
+        public IList<Champion> EnemyPicks
         {
             get
             {
@@ -72,7 +72,7 @@ namespace LolTeamOptimizer.Optimizers.Common
             }
         }
 
-        public IEnumerable<Champion> AlliedPicks
+        public IList<Champion> AlliedPicks
         {
             get
             {

@@ -12,7 +12,7 @@ using LolTeamOptimizer.Optimizers.Common;
 
 namespace LolTeamOptimizer.Optimizers.Implementations
 {
-    public class SimplexOptimizer : BaseTeamOptimizer
+    public class SimplexOptimizer : BaseTeamOptimizer<Champion>
     {
         private readonly Database database = new Database();
 

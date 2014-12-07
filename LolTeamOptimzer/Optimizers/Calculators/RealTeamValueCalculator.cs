@@ -7,7 +7,7 @@ using System.Linq;
 
 namespace LolTeamOptimizer.Optimizers.Calculators
 {
-    public class RealTeamValueCalculator : ITeamValueCalculator
+    public class RealTeamValueCalculator : ITeamValueCalculator<Champion>
     {
         public int CalculateTeamValue(IList<Champion> champs, IList<Champion> enemyChamps)
         {

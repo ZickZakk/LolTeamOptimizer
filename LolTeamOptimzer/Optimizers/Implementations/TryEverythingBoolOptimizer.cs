@@ -11,10 +11,10 @@ using LolTeamOptimizer.Optimizers.Common;
 
 namespace LolTeamOptimizer.Optimizers.Implementations
 {
-    public class TryEverythingOptimizer : BaseTeamOptimizer
+    public class TryEverythingBoolOptimizer : BaseTeamOptimizer<int>
     {
-        public TryEverythingOptimizer()
-            : base(new RealTeamValueCalculator())
+        public TryEverythingBoolOptimizer()
+            : base(new BooleanTeamValueCalculator())
         {
         }
 
@@ -24,19 +24,20 @@ namespace LolTeamOptimizer.Optimizers.Implementations
             var unavailableChampionIds = state.AlliedPicks.Union(state.Bans).Union(state.EnemyPicks).Select(champ => champ.Id);
 
             var availableChampionIds = database.Champions.Select(chmap => chmap.Id).Except(unavailableChampionIds).ToList();
-            var availableChampions = availableChampionIds.Select(id => database.Champions.Find(id)).ToList();
+
+            var enemyIds = state.EnemyPicks.Select(champ => champ.Id).ToList();
 
             var bestTeamValue = int.MinValue;
             var bestTeam = new Champion[state.TeamSize];
 
-            foreach (var champCombination in Combinations(availableChampions, 0, state.TeamSize - state.AlliedPicks.Count() - 1))
+            foreach (var champCombination in Combinations(availableChampionIds, 0, state.TeamSize - state.AlliedPicks.Count() - 1))
             {
-                var teamValue = this.teamValueCalculator.CalculateTeamValue(champCombination, state.EnemyPicks.ToList());
+                var teamValue = this.teamValueCalculator.CalculateTeamValue(champCombination, enemyIds);
 
                 if (teamValue > bestTeamValue)
                 {
                     bestTeamValue = teamValue;
-                    bestTeam = champCombination;
+                    bestTeam = champCombination.Select(id => database.Champions.Find(id)).ToArray();
                 }
             }
 

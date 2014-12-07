@@ -6,8 +6,8 @@ using System.Collections.Generic;
 
 namespace LolTeamOptimizer.Optimizers.Calculators
 {
-    public interface ITeamValueCalculator
+    public interface ITeamValueCalculator<T>
     {
-        int CalculateTeamValue(IList<Champion> champs, IList<Champion> enemyChamps);
+        int CalculateTeamValue(IList<T> champs, IList<T> enemyChamps);
     }
 }

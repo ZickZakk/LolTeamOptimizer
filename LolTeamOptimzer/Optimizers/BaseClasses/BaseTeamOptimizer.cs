@@ -8,11 +8,11 @@ using LolTeamOptimizer.Optimizers.Interfaces;
 
 namespace LolTeamOptimizer.Optimizers.BaseClasses
 {
-    public abstract class BaseTeamOptimizer : ITeamOptimizer
+    public abstract class BaseTeamOptimizer<T> : ITeamOptimizer
     {
-        protected readonly ITeamValueCalculator teamValueCalculator;
+        protected readonly ITeamValueCalculator<T> teamValueCalculator;
 
-        protected BaseTeamOptimizer(ITeamValueCalculator teamValueCalculator)
+        protected BaseTeamOptimizer(ITeamValueCalculator<T> teamValueCalculator)
         {
             this.teamValueCalculator = teamValueCalculator;
         }

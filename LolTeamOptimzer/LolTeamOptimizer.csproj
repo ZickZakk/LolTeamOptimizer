@@ -99,12 +99,14 @@
     <Compile Include="Optimizers\BaseClasses\BaseTeamOptimizer.cs" />
     <Compile Include="Optimizers\Calculators\BooleanTeamValueCalculator.cs" />
     <Compile Include="Optimizers\Calculators\ITeamValueCalculator.cs" />
+    <Compile Include="Optimizers\Implementations\BranchAndBoundCspOptimizer.cs" />
+    <Compile Include="Optimizers\Implementations\TryEverythingBoolOptimizer.cs" />
     <Compile Include="Optimizers\Interfaces\ITeamOptimizer.cs" />
     <Compile Include="Optimizers\Common\PickingState.cs" />
     <Compile Include="Optimizers\Implementations\SimplexOptimizer.cs" />
     <Compile Include="Optimizers\Calculators\RealTeamValueCalculator.cs" />
     <Compile Include="Optimizers\Common\TeamValuePair.cs" />
-    <Compile Include="Optimizers\Implementations\TryEverythingOptimizer.cs" />
+    <Compile Include="Optimizers\Implementations\TryEverythingRealValueOptimizer.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
