@@ -13,6 +13,10 @@ namespace LolTeamOptimizer.Optimizers.Implementations
 
         private IList<int> enemyChampions;
 
+        private Dictionary<int,int> vsPoints = new Dictionary<int, int>();
+
+        private SingleBooleanValueCalculator calc = new SingleBooleanValueCalculator(); 
+
         private TeamValuePair bestTeam;
 
         private int teamSize;
@@ -22,18 +26,18 @@ namespace LolTeamOptimizer.Optimizers.Implementations
         private int durchläufe;
 
         public BranchAndBoundCspOptimizer()
-            : base(new BooleanTeamValueCalculator())
+            : base(null)
         {
         }
 
         public override TeamValuePair CalculateOptimalePicks(PickingState state)
         {
-            this.InitiateAvailableChampions(state);
-
             bestTeam = new TeamValuePair(new List<Champion>(), int.MinValue);
 
             this.teamSize = state.TeamSize;
             this.enemyChampions = state.EnemyPicks.Select(champ => champ.Id).ToList();
+
+            this.InitiateAvailableChampions(state);
 
             this.BranchAndBound(new List<int>(), 0, new List<int>(),  0);
 
@@ -42,7 +46,7 @@ namespace LolTeamOptimizer.Optimizers.Implementations
 
         private void BranchAndBound(IList<int> currentTeam, int teamValue, IList<int> usedChampions, int tiefe)
         {
-            if (tiefe == this.teamSize )
+            if (tiefe == this.teamSize)
             {
                 bestTeam.Team = currentTeam.Select(id => database.Champions.Find(id)).ToList();
                 bestTeam.TeamValue = teamValue;
@@ -57,7 +61,7 @@ namespace LolTeamOptimizer.Optimizers.Implementations
                 currentTeam.Add(alternativerChamp);
                 usedChampions.Add(alternativerChamp);
 
-                var currentTeamValue = this.teamValueCalculator.CalculateTeamValue(currentTeam.ToList(), this.enemyChampions.ToList());
+                var currentTeamValue = currentTeam.Select(x => vsPoints[x]).Sum() + calc.CalculateSynergy(currentTeam);
 
                 // Add possible Synergies
                 currentTeamValue += this.teamSize * (this.teamSize - 1) - currentTeamSize * (currentTeamSize - 1);
@@ -86,7 +90,17 @@ namespace LolTeamOptimizer.Optimizers.Implementations
         {
             var unavailableChampions = state.AlliedPicks.Union(state.Bans).Union(state.EnemyPicks).Select(champ => champ.Id);
 
-            this.availableChampions = database.Champions.Select(chmap => chmap.Id).Except(unavailableChampions).ToList();
+            this.availableChampions = database.Champions.Select(champ => champ.Id).Except(unavailableChampions).ToList();
+
+            foreach (var availableChampion in availableChampions)
+            {
+                var value = calc.CalculateNotWeaknesses(availableChampion, enemyChampions)
+                            + calc.CalculateStrenghts(availableChampion, enemyChampions);
+
+                this.vsPoints.Add(availableChampion, value);
+            }
+
+            this.availableChampions = vsPoints.OrderByDescending(x => x.Value).Select(x => x.Key).ToList();
         }
     }
 }

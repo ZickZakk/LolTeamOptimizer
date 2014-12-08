@@ -99,6 +99,7 @@
     <Compile Include="Optimizers\BaseClasses\BaseTeamOptimizer.cs" />
     <Compile Include="Optimizers\Calculators\BooleanTeamValueCalculator.cs" />
     <Compile Include="Optimizers\Calculators\ITeamValueCalculator.cs" />
+    <Compile Include="Optimizers\Calculators\SingleBooleanValueCalculator.cs" />
     <Compile Include="Optimizers\Implementations\BranchAndBoundCspOptimizer.cs" />
     <Compile Include="Optimizers\Implementations\TryEverythingBoolOptimizer.cs" />
     <Compile Include="Optimizers\Interfaces\ITeamOptimizer.cs" />
