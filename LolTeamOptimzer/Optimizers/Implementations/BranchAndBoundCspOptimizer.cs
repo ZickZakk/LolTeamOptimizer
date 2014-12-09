@@ -39,17 +39,17 @@ namespace LolTeamOptimizer.Optimizers.Implementations
 
             this.InitiateAvailableChampions(state);
 
-            this.BranchAndBound(new List<int>(), 0, new List<int>(),  0);
+            this.BranchAndBound(new List<int>(), 0, 0, new List<int>(),  0);
 
             return bestTeam;
         }
 
-        private void BranchAndBound(IList<int> currentTeam, int teamValue, IList<int> usedChampions, int tiefe)
+        private void BranchAndBound(IList<int> currentTeam, int synergies, int strenghts, IList<int> usedChampions, int tiefe)
         {
             if (tiefe == this.teamSize)
             {
                 bestTeam.Team = currentTeam.Select(id => database.Champions.Find(id)).ToList();
-                bestTeam.TeamValue = teamValue;
+                bestTeam.TeamValue = synergies + strenghts;
                 return;
             }
 
@@ -61,17 +61,24 @@ namespace LolTeamOptimizer.Optimizers.Implementations
                 currentTeam.Add(alternativerChamp);
                 usedChampions.Add(alternativerChamp);
 
-                var currentTeamValue = currentTeam.Select(x => vsPoints[x]).Sum() + calc.CalculateSynergy(currentTeam);
+                // Calc synergy with new champ
+                var currentTeamSynergy = synergies + calc.CalculateSynergy(currentTeam);
 
-                // Add possible Synergies
-                currentTeamValue += this.teamSize * (this.teamSize - 1) - currentTeamSize * (currentTeamSize - 1);
+                // Calc possible Synergies
+                var possibleAdditionalTeamSynergy = this.teamSize * (this.teamSize - 1) - currentTeamSize * (currentTeamSize - 1);
+
+                // Calc vsPoints with new champ
+                var currentTeamStrengths = strenghts + vsPoints[alternativerChamp];
 
                 // Add possible Strenghts & NotWeaknesses
-                currentTeamValue += this.enemyChampions.Count * (this.teamSize - currentTeamSize) * 2;
+                var possibleAdditionalTeamStrength = alternativeChamps.SkipWhile(id => id != alternativerChamp).Except(currentTeam).Take(teamSize - currentTeamSize).Select(id => vsPoints[id]).Sum();
+                
+                var currentTeamValue = currentTeamSynergy + possibleAdditionalTeamSynergy + currentTeamStrengths
+                                       + possibleAdditionalTeamStrength;
 
                 if (currentTeamValue > bestTeam.TeamValue)
                 {
-                    this.BranchAndBound(currentTeam.ToList(), currentTeamValue, usedChampions.ToList(), currentTeamSize);
+                    this.BranchAndBound(currentTeam.ToList(), currentTeamSynergy, currentTeamStrengths, usedChampions.ToList(), currentTeamSize);
                 }
 
                 currentTeam.Remove(alternativerChamp);

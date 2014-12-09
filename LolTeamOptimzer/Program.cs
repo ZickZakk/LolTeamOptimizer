@@ -40,7 +40,7 @@ namespace LolTeamOptimizer
             var jarvan = dataBase.Champions.Single(champ => champ.Name == "jarvan-iv");
             var orianna = dataBase.Champions.Single(champ => champ.Name == "orianna");
 
-            var enemies = new List<Champion> { thresh, maokai, lucian, jarvan/*, orianna */};
+            var enemies = new List<Champion> { thresh, maokai, lucian, jarvan, orianna };
 
             var state = new PickingState(enemies.Count) { EnemyPicks = enemies };
 

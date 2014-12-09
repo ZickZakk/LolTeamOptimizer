@@ -51,7 +51,20 @@
 
         public int CalculateSynergy(IList<int> champs)
         {
-            return (from champ in champs from otherChamp in champs.Where(id => id != champ) where this.synergies[champ, otherChamp] select champ).Count();
+            var result = 0;
+            foreach (var champ in champs.Take(champs.Count - 1))
+            {
+                if (synergies[champ, champs.Last()])
+                {
+                    result++;
+                }
+
+                if (synergies[champs.Last(), champ])
+                {
+                    result++;
+                }
+            }
+            return result;
         }
     }
 }
