@@ -15,19 +15,21 @@ namespace LolTeamOptimizer.Optimizers.Implementations
 
         private Dictionary<int,int> vsPoints = new Dictionary<int, int>();
 
-        private SingleBooleanValueCalculator calc = new SingleBooleanValueCalculator(); 
+        private SingleBooleanValueCalculator calc; 
 
         private TeamValuePair bestTeam;
 
         private int teamSize;
 
-        private readonly Database database = new Database();
-
         private int durchläufe;
 
-        public BranchAndBoundCspOptimizer()
+        private IList<Champion> championSet;
+
+        public BranchAndBoundCspOptimizer(IList<Champion> championSet)
             : base(null)
         {
+            this.championSet = championSet;
+            this.calc = new SingleBooleanValueCalculator(championSet);
         }
 
         public override TeamValuePair CalculateOptimalePicks(PickingState state)
@@ -48,7 +50,7 @@ namespace LolTeamOptimizer.Optimizers.Implementations
         {
             if (tiefe == this.teamSize)
             {
-                bestTeam.Team = currentTeam.Select(id => database.Champions.Find(id)).ToList();
+                // bestTeam.Team = currentTeam.Select(id => database.Champions.Find(id)).ToList();
                 bestTeam.TeamValue = synergies + strenghts;
                 return;
             }
@@ -97,7 +99,7 @@ namespace LolTeamOptimizer.Optimizers.Implementations
         {
             var unavailableChampions = state.AlliedPicks.Union(state.Bans).Union(state.EnemyPicks).Select(champ => champ.Id);
 
-            this.availableChampions = database.Champions.Select(champ => champ.Id).Except(unavailableChampions).ToList();
+            this.availableChampions = this.championSet.Select(champ => champ.Id).Except(unavailableChampions).ToList();
 
             foreach (var availableChampion in availableChampions)
             {

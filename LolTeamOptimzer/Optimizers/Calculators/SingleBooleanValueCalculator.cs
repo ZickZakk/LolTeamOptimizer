@@ -11,16 +11,16 @@
 
         private readonly bool[,] strengths;
 
-        public SingleBooleanValueCalculator()
+        public SingleBooleanValueCalculator(IList<Champion> champs)
         {
-            var database = new Database();
-            var anz = database.Champions.Max(champ => champ.Id) + 1;
+            //var anz = champs.Max(champ => champ.Id) + 1;
+            var anz = 1000 + 1;
 
             synergies = new bool[anz, anz];
             weaknesses = new bool[anz, anz];
             strengths = new bool[anz, anz];
 
-            foreach (var champion in database.Champions)
+            foreach (var champion in champs)
             {
                 foreach (var rel in champion.GoesWellWith)
                 {
