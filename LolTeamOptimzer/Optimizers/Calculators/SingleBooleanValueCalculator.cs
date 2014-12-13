@@ -13,8 +13,7 @@
 
         public SingleBooleanValueCalculator(IList<Champion> champs)
         {
-            //var anz = champs.Max(champ => champ.Id) + 1;
-            var anz = 1000 + 1;
+            var anz = champs.Max(champ => champ.Id) + 1;
 
             synergies = new bool[anz, anz];
             weaknesses = new bool[anz, anz];

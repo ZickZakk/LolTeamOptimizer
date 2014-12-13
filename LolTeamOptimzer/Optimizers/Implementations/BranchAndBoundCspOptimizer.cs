@@ -21,9 +21,7 @@ namespace LolTeamOptimizer.Optimizers.Implementations
 
         private int teamSize;
 
-        private int durchläufe;
-
-        private IList<Champion> championSet;
+        private readonly IList<Champion> championSet;
 
         public BranchAndBoundCspOptimizer(IList<Champion> championSet)
             : base(null)
@@ -38,6 +36,7 @@ namespace LolTeamOptimizer.Optimizers.Implementations
 
             this.teamSize = state.TeamSize;
             this.enemyChampions = state.EnemyPicks.Select(champ => champ.Id).ToList();
+            this.vsPoints = new Dictionary<int, int>();
 
             this.InitiateAvailableChampions(state);
 

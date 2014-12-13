@@ -68,3 +68,4 @@ packages/
 *.testsettings
 LolTeamOptimzer/random_database.mdf
 LolTeamOptimzer/random_database_log.ldf
+LolTeamOptimzer/random_database*

@@ -15,7 +15,11 @@ using LolTeamOptimizer.Optimizers.Interfaces;
 namespace LolTeamOptimizer
 {
 
+
+
     #region using
+
+    using System.Data.Entity.Core.Metadata.Edm;
 
     #endregion
 
@@ -26,7 +30,17 @@ namespace LolTeamOptimizer
         private static void Main(string[] args)
         {
             // GatherData();
-            //GenerateRandomDatabase();
+            //GenerateRandomDatabase(25);
+            //GenerateRandomDatabase(50);
+            //GenerateRandomDatabase(75);
+            //GenerateRandomDatabase(100);
+            //GenerateRandomDatabase(200);
+            //GenerateRandomDatabase(300);
+            //GenerateRandomDatabase(400);
+            //GenerateRandomDatabase(500);
+            //GenerateRandomDatabase(750);
+
+            // StatisticalAnalysis();
 
             TestTimes();
 
@@ -35,23 +49,36 @@ namespace LolTeamOptimizer
             Console.ReadKey();
         }
 
-        private static void TestTimes()
+        private static void StatisticalAnalysis()
         {
-            var database = new Database("Random_Database");
+            var database = new Database();
 
-            var random = new Random();
+            var doubleRelation = Enumerable.Count(database.GoesWellWithSet, goesWellWith => database.GoesWellWithSet.Any(rel => rel.OtherChampion.Id == goesWellWith.Champion.Id && rel.Champion.Id == goesWellWith.OtherChampion.Id));
 
-            GetRunningTime(database, random, 25);
-            GetRunningTime(database, random, 50);
-            GetRunningTime(database, random, 100);
-            GetRunningTime(database, random, 150);
-            GetRunningTime(database, random, 250);
-            GetRunningTime(database, random, 500);
-            GetRunningTime(database, random, 1000);
+            double ergebnis = doubleRelation / Convert.ToDouble(database.GoesWellWithSet.Count());
+
+            Console.WriteLine("Prozentzahl der doppelten Verbidnungen bei vs: {0}", ergebnis);
         }
 
-        private static void GetRunningTime(Database database, Random random, int anzahlChampions)
+        private static void TestTimes()
         {
+            var random = new Random();
+
+            GetRunningTime(random, 25);
+            GetRunningTime(random, 50);
+            GetRunningTime(random, 75);
+            GetRunningTime(random, 100);
+            GetRunningTime(random, 200);
+            GetRunningTime(random, 300);
+            GetRunningTime(random, 400);
+            GetRunningTime(random, 500);
+            //GetRunningTime(random, 750);
+        }
+
+        private static void GetRunningTime(Random random, int anzahlChampions)
+        {
+            const int TeamSize = 5;
+            var database = new Database("Random_Database_" + anzahlChampions); 
             var stopWatch = new Stopwatch();
 
             Console.WriteLine("Teste {0} : ", anzahlChampions);
@@ -59,15 +86,16 @@ namespace LolTeamOptimizer
             var time = 0.0;
 
             var champions = database.Champions.Take(anzahlChampions).ToList();
-            for (int j = 0; j < 5; j++)
+            var optimizer = new BranchAndBoundCspOptimizer(champions);
+
+            for (int j = 0; j < 10; j++)
             {
-                var enemies = GetRandomEnemies(champions, random);
-                var state = new PickingState(5) { EnemyPicks = enemies };
+                var enemies = GetRandomEnemies(champions, random, TeamSize);
+                var state = new PickingState(TeamSize) { EnemyPicks = enemies };
 
                 for (int i = 0; i < 2; i++)
                 {
                     stopWatch.Start();
-                    var optimizer = new BranchAndBoundCspOptimizer(champions);
                     optimizer.CalculateOptimalePicks(state);
                     stopWatch.Stop();
 
@@ -76,17 +104,17 @@ namespace LolTeamOptimizer
                 }
             }
 
-            Console.WriteLine("Ergebnis : {0}", time / 10.0);
+            Console.WriteLine("Ergebnis : {0}", time / 20.0);
         }
 
-        private static IList<Champion> GetRandomEnemies(IList<Champion> champions, Random random)
+        private static IList<Champion> GetRandomEnemies(IList<Champion> champions, Random random, int teamSize)
         {
-            var enemies = new List<Champion>(5);
+            var enemies = new List<Champion>(teamSize);
 
             var min = champions.Min(x => x.Id);
             var max = champions.Max(x => x.Id) + 1;
 
-            for (int i = 0; i < 5; i++)
+            for (int i = 0; i < teamSize; i++)
             {
                 var nextId = random.Next(min, max);
                 enemies.Add(champions.Single(champ => champ.Id == nextId));
@@ -95,58 +123,88 @@ namespace LolTeamOptimizer
             return enemies;
         }
 
-        private static void GenerateRandomDatabase()
+        private static void GenerateRandomDatabase(int anz)
         {
-            var database = new Database("Random_Database");
-            database.Configuration.AutoDetectChangesEnabled = false;
+            const double SynergyDoubleProbality = 0.8;
+            const double StrenghtDoubleProbality = 0.6;
+            const double WeaknessDoubleProbality = 0.2;
 
-            // Generate Champs
+            var database = InitializeDatabase(anz);
 
-            for (int i = 0; i < 1000; i++)
-            {
-                database = AddToContext(database, new Champion { Name = i.ToString() }, i, 100, true);
-            }
-            database.SaveChanges();
+            GenerateCahmpions(anz, database);
 
             var min = database.Champions.Min(x => x.Id);
             var max = database.Champions.Max(x => x.Id) + 1;
 
             var random = new Random();
-            var count = 0;
+            var doubleRelationRandom = new Random();
+
+            var relations = anz / 5;
             foreach (var champion in database.Champions.ToList())
             {
-                for (int i = 0; i < 200; i++)
+                for (int i = 0; i < relations; i++)
                 {
                     var otherChamp = database.Champions.Find(random.Next(min, max));
-                    count++;
-                    database = AddToContext(database, new GoesWellWith { Champion = champion, OtherChampion = otherChamp }, count, 100, true);
+                    database.GoesWellWithSet.Add(new GoesWellWith { Champion = champion, OtherChampion = otherChamp });
+                    
+                    if (doubleRelationRandom.NextDouble() <= SynergyDoubleProbality)
+                    {
+                        database.GoesWellWithSet.Add(new GoesWellWith { Champion = otherChamp, OtherChampion = champion });
+                        i++;
+                    }
                 }
 
-                for (int i = 0; i < 200; i++)
-                {
-                    var otherChamp = database.Champions.Find(random.Next(min, max));
-
-                    count++;
-                    database = AddToContext(database, new IsStrongAgainst { Champion = champion, OtherChampion = otherChamp }, count, 100, true);
-                }
-
-                for (int i = 0; i < 200; i++)
+                for (int i = 0; i < relations; i++)
                 {
                     var otherChamp = database.Champions.Find(random.Next(min, max));
 
-                    count++;
-                    database = AddToContext(database, new IsWeakAgainst { Champion = champion, OtherChampion = otherChamp }, count, 100, true);
+                    database.IsStrongAgainstSet.Add(new IsStrongAgainst { Champion = champion, OtherChampion = otherChamp });
+
+                    if (doubleRelationRandom.NextDouble() <= StrenghtDoubleProbality)
+                    {
+                        database.IsWeakAgainstSet.Add(new IsWeakAgainst { Champion = otherChamp, OtherChampion = champion });
+                        i++;
+                    }
                 }
 
-                Console.WriteLine(count / 600.0);
+                for (int i = 0; i < relations; i++)
+                {
+                    var otherChamp = database.Champions.Find(random.Next(min, max));
+
+                    database.IsWeakAgainstSet.Add(new IsWeakAgainst { Champion = champion, OtherChampion = otherChamp });
+
+                    if (doubleRelationRandom.NextDouble() <= WeaknessDoubleProbality)
+                    {
+                        database.IsStrongAgainstSet.Add(new IsStrongAgainst { Champion = otherChamp, OtherChampion = champion });
+                        i++;
+                    }
+                }
+
+                database.SaveChanges();
+            }
+
+            Console.WriteLine("Fertig mit {0}!", anz);
+        }
+
+        private static void GenerateCahmpions(int anz, Database database)
+        {
+            for (int i = 0; i < anz; i++)
+            {
+                database.Champions.Add(new Champion { Name = i.ToString() });
             }
 
             database.SaveChanges();
-
-            Console.WriteLine("Fertig!");
         }
 
-        private static Database AddToContext<T>(Database context, T entity, int count, int commitCount, bool recreateContext) where T : class
+        private static Database InitializeDatabase(int anz)
+        {
+            var contextName = "name=Random_Database_" + anz;
+            var database = new Database(contextName);
+            database.Configuration.AutoDetectChangesEnabled = false;
+            return database;
+        }
+
+        private static Database AddToContext<T>(Database context, string contextName, T entity, int count, int commitCount, bool recreateContext) where T : class
         {
             context.Set<T>().Add(entity);
 
@@ -156,7 +214,7 @@ namespace LolTeamOptimizer
                 if (recreateContext)
                 {
                     context.Dispose();
-                    context = new Database("Random_Database");
+                    context = new Database(contextName);
                     context.Configuration.AutoDetectChangesEnabled = false;
                 }
             }

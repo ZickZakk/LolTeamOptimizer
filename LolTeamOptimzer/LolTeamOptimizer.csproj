@@ -142,12 +142,68 @@
       <DependentUpon>database.mdf</DependentUpon>
     </Content>
     <Content Include="DataModel.edmx.sql" />
-    <Content Include="random_database.mdf">
+    <Content Include="random_database_750.mdf">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Include="random_database_log.ldf">
+    <Content Include="random_database_750_log.ldf">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-      <DependentUpon>random_database.mdf</DependentUpon>
+      <DependentUpon>random_database_750.mdf</DependentUpon>
+    </Content>
+    <Content Include="random_database_500.mdf">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="random_database_500_log.ldf">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <DependentUpon>random_database_500.mdf</DependentUpon>
+    </Content>
+    <Content Include="random_database_400.mdf">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="random_database_400_log.ldf">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <DependentUpon>random_database_400.mdf</DependentUpon>
+    </Content>
+    <Content Include="random_database_300.mdf">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="random_database_300_log.ldf">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <DependentUpon>random_database_300.mdf</DependentUpon>
+    </Content>
+    <Content Include="random_database_200.mdf">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="random_database_200_log.ldf">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <DependentUpon>random_database_200.mdf</DependentUpon>
+    </Content>
+    <Content Include="random_database_100.mdf">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="random_database_100_log.ldf">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <DependentUpon>random_database_100.mdf</DependentUpon>
+    </Content>
+    <Content Include="random_database_75.mdf">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="random_database_75_log.ldf">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <DependentUpon>random_database_75.mdf</DependentUpon>
+    </Content>
+    <Content Include="random_database_50.mdf">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="random_database_50_log.ldf">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <DependentUpon>random_database_50.mdf</DependentUpon>
+    </Content>
+    <Content Include="random_database_25.mdf">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="random_database_25_log.ldf">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <DependentUpon>random_database_25.mdf</DependentUpon>
     </Content>
   </ItemGroup>
   <ItemGroup>
