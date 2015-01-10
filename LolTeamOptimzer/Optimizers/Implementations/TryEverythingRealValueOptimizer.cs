@@ -20,7 +20,7 @@ namespace LolTeamOptimizer.Optimizers.Implementations
 
         public override TeamValuePair CalculateOptimalePicks(PickingState state)
         {
-            var database = new Database();
+            var database = new Database(CurrentDatabase.Name);
             var unavailableChampionIds = state.AlliedPicks.Union(state.Bans).Union(state.EnemyPicks).Select(champ => champ.Id);
 
             var availableChampionIds = database.Champions.Select(chmap => chmap.Id).Except(unavailableChampionIds).ToList();

@@ -71,6 +71,7 @@
     <Compile Include="Champion.cs">
       <DependentUpon>DataModel.tt</DependentUpon>
     </Compile>
+    <Compile Include="CurrentDatabase.cs" />
     <Compile Include="DatabasePartial.cs" />
     <Compile Include="DataModel.Context.cs">
       <AutoGen>True</AutoGen>
@@ -100,14 +101,20 @@
     <Compile Include="Optimizers\BaseClasses\BaseTeamOptimizer.cs" />
     <Compile Include="Optimizers\Calculators\BooleanTeamValueCalculator.cs" />
     <Compile Include="Optimizers\Calculators\ITeamValueCalculator.cs" />
+    <Compile Include="Optimizers\Calculators\SingleChampionBooleanValueCalculator.cs" />
     <Compile Include="Optimizers\Calculators\SingleBooleanValueCalculator.cs" />
+    <Compile Include="Optimizers\Common\ChampionValuePair.cs" />
+    <Compile Include="Optimizers\Common\IntegerLimit.cs" />
+    <Compile Include="Optimizers\Common\TeamValuePair.cs" />
+    <Compile Include="Optimizers\Implementations\SwitchOutOptimizer.cs" />
     <Compile Include="Optimizers\Implementations\BranchAndBoundCspOptimizer.cs" />
+    <Compile Include="Optimizers\Implementations\BooleanValueSimplexOptimizer.cs" />
     <Compile Include="Optimizers\Implementations\TryEverythingBoolOptimizer.cs" />
     <Compile Include="Optimizers\Interfaces\ITeamOptimizer.cs" />
     <Compile Include="Optimizers\Common\PickingState.cs" />
-    <Compile Include="Optimizers\Implementations\SimplexOptimizer.cs" />
+    <Compile Include="Optimizers\Implementations\RealValueSimplexOptimizer.cs" />
     <Compile Include="Optimizers\Calculators\RealTeamValueCalculator.cs" />
-    <Compile Include="Optimizers\Common\TeamValuePair.cs" />
+    <Compile Include="Optimizers\Common\IntTeamValuePair.cs" />
     <Compile Include="Optimizers\Implementations\TryEverythingRealValueOptimizer.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -142,11 +149,8 @@
       <DependentUpon>database.mdf</DependentUpon>
     </Content>
     <Content Include="DataModel.edmx.sql" />
-    <Content Include="random_database_750.mdf">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
+    <Content Include="random_database_750.mdf" />
     <Content Include="random_database_750_log.ldf">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
       <DependentUpon>random_database_750.mdf</DependentUpon>
     </Content>
     <Content Include="random_database_500.mdf">

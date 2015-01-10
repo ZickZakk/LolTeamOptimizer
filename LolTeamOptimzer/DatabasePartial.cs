@@ -2,9 +2,9 @@
 {
     public partial class Database
     {
-        public Database(string name) : base(name)
+        public Database(string name)
+            : base(name)
         {
-            
         }
     }
 }

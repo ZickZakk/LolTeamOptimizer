@@ -1,27 +1,31 @@
-﻿using System.Collections.Generic;
+﻿#region Using
+
+using System.Collections.Generic;
 using System.Linq;
 
 using LolTeamOptimizer.Optimizers.BaseClasses;
 using LolTeamOptimizer.Optimizers.Calculators;
 using LolTeamOptimizer.Optimizers.Common;
 
+#endregion
+
 namespace LolTeamOptimizer.Optimizers.Implementations
 {
     public class BranchAndBoundCspOptimizer : BaseTeamOptimizer<int>
     {
+        private readonly SingleBooleanValueCalculator calc;
+
+        private readonly IList<Champion> championSet;
+
         private IList<int> availableChampions;
+
+        private IntTeamValuePair bestTeam;
 
         private IList<int> enemyChampions;
 
-        private Dictionary<int,int> vsPoints = new Dictionary<int, int>();
-
-        private SingleBooleanValueCalculator calc; 
-
-        private TeamValuePair bestTeam;
-
         private int teamSize;
 
-        private readonly IList<Champion> championSet;
+        private Dictionary<int, int> vsPoints = new Dictionary<int, int>();
 
         public BranchAndBoundCspOptimizer(IList<Champion> championSet)
             : base(null)
@@ -32,7 +36,7 @@ namespace LolTeamOptimizer.Optimizers.Implementations
 
         public override TeamValuePair CalculateOptimalePicks(PickingState state)
         {
-            bestTeam = new TeamValuePair(new List<Champion>(), int.MinValue);
+            this.bestTeam = new IntTeamValuePair(new List<int>(), int.MinValue);
 
             this.teamSize = state.TeamSize;
             this.enemyChampions = state.EnemyPicks.Select(champ => champ.Id).ToList();
@@ -40,17 +44,17 @@ namespace LolTeamOptimizer.Optimizers.Implementations
 
             this.InitiateAvailableChampions(state);
 
-            this.BranchAndBound(new List<int>(), 0, 0, new List<int>(),  0);
+            this.BranchAndBound(new List<int>(), 0, 0, new List<int>(), 0);
 
-            return bestTeam;
+            return this.bestTeam.ToTeamValuePair();
         }
 
         private void BranchAndBound(IList<int> currentTeam, int synergies, int strenghts, IList<int> usedChampions, int tiefe)
         {
             if (tiefe == this.teamSize)
             {
-                // bestTeam.Team = currentTeam.Select(id => database.Champions.Find(id)).ToList();
-                bestTeam.TeamValue = synergies + strenghts;
+                bestTeam.Team = currentTeam.ToList();
+                this.bestTeam.TeamValue = synergies + strenghts;
                 return;
             }
 
@@ -63,21 +67,20 @@ namespace LolTeamOptimizer.Optimizers.Implementations
                 usedChampions.Add(alternativerChamp);
 
                 // Calc synergy with new champ
-                var currentTeamSynergy = synergies + calc.CalculateSynergy(currentTeam);
+                var currentTeamSynergy = synergies + this.calc.CalculateSynergy(currentTeam);
 
                 // Calc possible Synergies
                 var possibleAdditionalTeamSynergy = this.teamSize * (this.teamSize - 1) - currentTeamSize * (currentTeamSize - 1);
 
                 // Calc vsPoints with new champ
-                var currentTeamStrengths = strenghts + vsPoints[alternativerChamp];
+                var currentTeamStrengths = strenghts + this.vsPoints[alternativerChamp];
 
                 // Add possible Strenghts & NotWeaknesses
-                var possibleAdditionalTeamStrength = alternativeChamps.SkipWhile(id => id != alternativerChamp).Except(currentTeam).Take(teamSize - currentTeamSize).Select(id => vsPoints[id]).Sum();
-                
-                var currentTeamValue = currentTeamSynergy + possibleAdditionalTeamSynergy + currentTeamStrengths
-                                       + possibleAdditionalTeamStrength;
+                var possibleAdditionalTeamStrength = alternativeChamps.SkipWhile(id => id != alternativerChamp).Except(currentTeam).Take(this.teamSize - currentTeamSize).Select(id => this.vsPoints[id]).Sum();
 
-                if (currentTeamValue > bestTeam.TeamValue)
+                var currentTeamValue = currentTeamSynergy + possibleAdditionalTeamSynergy + currentTeamStrengths + possibleAdditionalTeamStrength;
+
+                if (currentTeamValue > this.bestTeam.TeamValue)
                 {
                     this.BranchAndBound(currentTeam.ToList(), currentTeamSynergy, currentTeamStrengths, usedChampions.ToList(), currentTeamSize);
                 }
@@ -91,7 +94,7 @@ namespace LolTeamOptimizer.Optimizers.Implementations
         {
             var unavailableChampions = champions.Union(usedChampions);
 
-            return availableChampions.Except(unavailableChampions).ToList();
+            return this.availableChampions.Except(unavailableChampions).ToList();
         }
 
         private void InitiateAvailableChampions(PickingState state)
@@ -100,15 +103,14 @@ namespace LolTeamOptimizer.Optimizers.Implementations
 
             this.availableChampions = this.championSet.Select(champ => champ.Id).Except(unavailableChampions).ToList();
 
-            foreach (var availableChampion in availableChampions)
+            foreach (var availableChampion in this.availableChampions)
             {
-                var value = calc.CalculateNotWeaknesses(availableChampion, enemyChampions)
-                            + calc.CalculateStrenghts(availableChampion, enemyChampions);
+                var value = this.calc.CalculateNotWeaknesses(availableChampion, this.enemyChampions) + this.calc.CalculateStrenghts(availableChampion, this.enemyChampions);
 
                 this.vsPoints.Add(availableChampion, value);
             }
 
-            this.availableChampions = vsPoints.OrderByDescending(x => x.Value).Select(x => x.Key).ToList();
+            this.availableChampions = this.vsPoints.OrderByDescending(x => x.Value).Select(x => x.Key).ToList();
         }
     }
 }

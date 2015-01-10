@@ -2,10 +2,10 @@
 
 using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Diagnostics;
 using System.Linq;
 
+using LolTeamOptimizer.Optimizers.Calculators;
 using LolTeamOptimizer.Optimizers.Common;
 using LolTeamOptimizer.Optimizers.Implementations;
 using LolTeamOptimizer.Optimizers.Interfaces;
@@ -14,12 +14,9 @@ using LolTeamOptimizer.Optimizers.Interfaces;
 
 namespace LolTeamOptimizer
 {
-
-
-
     #region using
 
-    using System.Data.Entity.Core.Metadata.Edm;
+    
 
     #endregion
 
@@ -44,18 +41,18 @@ namespace LolTeamOptimizer
 
             TestTimes();
 
-            // TestOptimization();
+            //TestOptimization();
 
             Console.ReadKey();
         }
 
         private static void StatisticalAnalysis()
         {
-            var database = new Database();
+            var database = new Database(CurrentDatabase.Name);
 
             var doubleRelation = Enumerable.Count(database.GoesWellWithSet, goesWellWith => database.GoesWellWithSet.Any(rel => rel.OtherChampion.Id == goesWellWith.Champion.Id && rel.Champion.Id == goesWellWith.OtherChampion.Id));
 
-            double ergebnis = doubleRelation / Convert.ToDouble(database.GoesWellWithSet.Count());
+            var ergebnis = doubleRelation / Convert.ToDouble(database.GoesWellWithSet.Count());
 
             Console.WriteLine("Prozentzahl der doppelten Verbidnungen bei vs: {0}", ergebnis);
         }
@@ -78,33 +75,50 @@ namespace LolTeamOptimizer
         private static void GetRunningTime(Random random, int anzahlChampions)
         {
             const int TeamSize = 5;
-            var database = new Database("Random_Database_" + anzahlChampions); 
+            CurrentDatabase.Name = "Random_Database_" + anzahlChampions;
+            var database = new Database(CurrentDatabase.Name);
             var stopWatch = new Stopwatch();
 
             Console.WriteLine("Teste {0} : ", anzahlChampions);
 
             var time = 0.0;
+            var time2 = 0.0;
+
+            var abweichung = 0;
 
             var champions = database.Champions.Take(anzahlChampions).ToList();
             var optimizer = new BranchAndBoundCspOptimizer(champions);
+            var optimizer2 = new SwitchOutOptimizer(champions);
 
-            for (int j = 0; j < 10; j++)
+            var booleanTeamValueCalculator = new BooleanTeamValueCalculator();
+
+            for (var j = 0; j < 10; j++)
             {
                 var enemies = GetRandomEnemies(champions, random, TeamSize);
                 var state = new PickingState(TeamSize) { EnemyPicks = enemies };
 
-                for (int i = 0; i < 2; i++)
+                for (var i = 0; i < 2; i++)
                 {
                     stopWatch.Start();
-                    optimizer.CalculateOptimalePicks(state);
+                    var result = optimizer.CalculateOptimalePicks(state);
                     stopWatch.Stop();
 
                     time += stopWatch.Elapsed.TotalMilliseconds;
                     stopWatch.Reset();
+
+                    stopWatch.Start();
+                    var result2 = optimizer2.CalculateOptimalePicks(state);
+                    stopWatch.Stop();
+
+                    time2 += stopWatch.Elapsed.TotalMilliseconds;
+                    stopWatch.Reset();
+
+                    abweichung += result.TeamValue - booleanTeamValueCalculator.CalculateTeamValue(result2.Team.Select(champ => champ.Id).ToList(), enemies.Select(champ => champ.Id).ToList());
                 }
             }
 
-            Console.WriteLine("Ergebnis : {0}", time / 20.0);
+            Console.WriteLine("Ergebnis B&B: {0}", time / 20.0);
+            Console.WriteLine("Ergebnis SO : {0} | Abweichung: {1}", time2 / 20.0, abweichung / 20.0);
         }
 
         private static IList<Champion> GetRandomEnemies(IList<Champion> champions, Random random, int teamSize)
@@ -114,7 +128,7 @@ namespace LolTeamOptimizer
             var min = champions.Min(x => x.Id);
             var max = champions.Max(x => x.Id) + 1;
 
-            for (int i = 0; i < teamSize; i++)
+            for (var i = 0; i < teamSize; i++)
             {
                 var nextId = random.Next(min, max);
                 enemies.Add(champions.Single(champ => champ.Id == nextId));
@@ -142,11 +156,11 @@ namespace LolTeamOptimizer
             var relations = anz / 5;
             foreach (var champion in database.Champions.ToList())
             {
-                for (int i = 0; i < relations; i++)
+                for (var i = 0; i < relations; i++)
                 {
                     var otherChamp = database.Champions.Find(random.Next(min, max));
                     database.GoesWellWithSet.Add(new GoesWellWith { Champion = champion, OtherChampion = otherChamp });
-                    
+
                     if (doubleRelationRandom.NextDouble() <= SynergyDoubleProbality)
                     {
                         database.GoesWellWithSet.Add(new GoesWellWith { Champion = otherChamp, OtherChampion = champion });
@@ -154,7 +168,7 @@ namespace LolTeamOptimizer
                     }
                 }
 
-                for (int i = 0; i < relations; i++)
+                for (var i = 0; i < relations; i++)
                 {
                     var otherChamp = database.Champions.Find(random.Next(min, max));
 
@@ -167,7 +181,7 @@ namespace LolTeamOptimizer
                     }
                 }
 
-                for (int i = 0; i < relations; i++)
+                for (var i = 0; i < relations; i++)
                 {
                     var otherChamp = database.Champions.Find(random.Next(min, max));
 
@@ -188,7 +202,7 @@ namespace LolTeamOptimizer
 
         private static void GenerateCahmpions(int anz, Database database)
         {
-            for (int i = 0; i < anz; i++)
+            for (var i = 0; i < anz; i++)
             {
                 database.Champions.Add(new Champion { Name = i.ToString() });
             }
@@ -224,9 +238,9 @@ namespace LolTeamOptimizer
 
         private static void TestOptimization()
         {
-            var dataBase = new Database();
+            var dataBase = new Database(CurrentDatabase.Name);
 
-            var thresh = dataBase.Champions.Single(champ => champ.Name == "thresh");
+            var thresh = dataBase.Champions.Single(champ => champ.Name == "morgana");
             var lucian = dataBase.Champions.Single(champ => champ.Name == "lucian");
             var maokai = dataBase.Champions.Single(champ => champ.Name == "maokai");
             var jarvan = dataBase.Champions.Single(champ => champ.Name == "jarvan-iv");
@@ -244,7 +258,19 @@ namespace LolTeamOptimizer
 
             var line = string.Join(", ", result.Team.Select(champ => champ.Name));
 
-            Console.WriteLine("Best Team ({0}): " + line, result.TeamValue);
+            var booleanTeamValueCalculator = new BooleanTeamValueCalculator();
+            Console.WriteLine("Best Team ({0}): " + line, booleanTeamValueCalculator.CalculateTeamValue(result.Team.Select(champ => champ.Id).ToList(), enemies.Select(champ => champ.Id).ToList()));
+            Console.WriteLine("Time: {0}", watch.Elapsed.TotalMilliseconds);
+
+            optimizer = new SwitchOutOptimizer(dataBase.Champions.ToList());
+            watch = new Stopwatch();
+            watch.Start();
+            result = optimizer.CalculateOptimalePicks(state);
+            watch.Stop();
+
+            line = string.Join(", ", result.Team.Select(champ => champ.Name));
+
+            Console.WriteLine("Best Team ({0}): " + line, booleanTeamValueCalculator.CalculateTeamValue(result.Team.Select(champ => champ.Id).ToList(), enemies.Select(champ => champ.Id).ToList()));
             Console.WriteLine("Time: {0}", watch.Elapsed.TotalMilliseconds);
         }
 
@@ -252,7 +278,7 @@ namespace LolTeamOptimizer
         {
             Console.WriteLine("### LoL-Counter Database Sync ###");
 
-            var dataBase = new Database();
+            var dataBase = new Database(CurrentDatabase.Name);
 
             Console.WriteLine("### Clearing Database ###");
 

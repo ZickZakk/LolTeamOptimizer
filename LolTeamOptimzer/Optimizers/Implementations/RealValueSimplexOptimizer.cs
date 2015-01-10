@@ -12,11 +12,11 @@ using LolTeamOptimizer.Optimizers.Common;
 
 namespace LolTeamOptimizer.Optimizers.Implementations
 {
-    public class SimplexOptimizer : BaseTeamOptimizer<Champion>
+    public class RealValueSimplexOptimizer : BaseTeamOptimizer<Champion>
     {
-        private readonly Database database = new Database();
+        private readonly Database database = new Database(CurrentDatabase.Name);
 
-        public SimplexOptimizer()
+        public RealValueSimplexOptimizer()
             : base(new RealTeamValueCalculator())
         {
         }
@@ -63,7 +63,7 @@ namespace LolTeamOptimizer.Optimizers.Implementations
             while (true)
             {
                 durchläufe++;
-                durchläufeSeitVerbesserung ++;
+                durchläufeSeitVerbesserung++;
 
                 // Teams nach Wert sortieren
                 simplexPoints = simplexPoints.OrderByDescending(tuple => tuple.TeamValue).ToList();

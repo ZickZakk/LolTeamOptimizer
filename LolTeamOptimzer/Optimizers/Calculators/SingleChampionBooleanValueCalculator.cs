@@ -7,7 +7,7 @@ using System.Linq;
 
 namespace LolTeamOptimizer.Optimizers.Calculators
 {
-    public class SingleBooleanValueCalculator
+    public class SingleChampionBooleanValueCalculator
     {
         private readonly bool[,] strengths;
 
@@ -15,7 +15,7 @@ namespace LolTeamOptimizer.Optimizers.Calculators
 
         private readonly bool[,] weaknesses;
 
-        public SingleBooleanValueCalculator(IList<Champion> champs)
+        public SingleChampionBooleanValueCalculator(IList<Champion> champs)
         {
             var anz = champs.Max(champ => champ.Id) + 1;
 
@@ -52,17 +52,17 @@ namespace LolTeamOptimizer.Optimizers.Calculators
             return enemyChamps.Count(enemyChamp => this.strengths[champ, enemyChamp]);
         }
 
-        public int CalculateSynergy(IList<int> champs)
+        public int CalculateSynergy(int champion, IList<int> teamMates)
         {
             var result = 0;
-            foreach (var champ in champs.Take(champs.Count - 1))
+            foreach (var mate in teamMates)
             {
-                if (this.synergies[champ, champs.Last()])
+                if (this.synergies[mate, champion])
                 {
                     result++;
                 }
 
-                if (this.synergies[champs.Last(), champ])
+                if (this.synergies[champion, mate])
                 {
                     result++;
                 }
