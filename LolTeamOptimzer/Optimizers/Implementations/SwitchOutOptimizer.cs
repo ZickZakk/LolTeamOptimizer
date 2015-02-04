@@ -51,24 +51,6 @@ namespace LolTeamOptimizer.Optimizers.Implementations
             {
                 var betterValues = new ConcurrentBag<ChampionValuePair>();
                 var curentTeam = team.Select(x => x.Champion).ToList();
-                //var menge = availableChampions.Except(curentTeam).ToList();
-
-                //Parallel.ForEach(
-                //    menge,
-                //    champ =>
-                //    {
-                //        for (int mateId = 0; mateId < teamSize; mateId++)
-                //        {
-                //            var mate = team[mateId];
-
-                //            var newValue = vsPoints[champ] + calc.CalculateSynergy(champ, curentTeam.Where(id => id != mate.Champion).ToList());
-
-                //            if (newValue > mate.Value)
-                //            {
-                //                betterValues.Add(new ChampionValuePair { Champion = champ, Value = newValue, ReplaceId = mateId });
-                //            }
-                //        }
-                //    });
 
                 foreach (var champ in availableChampions.Except(curentTeam))
                 {

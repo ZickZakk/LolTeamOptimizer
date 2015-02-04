@@ -238,6 +238,7 @@ namespace LolTeamOptimizer
 
         private static void TestOptimization()
         {
+            CurrentDatabase.Name = "Database";
             var dataBase = new Database(CurrentDatabase.Name);
 
             var thresh = dataBase.Champions.Single(champ => champ.Name == "morgana");

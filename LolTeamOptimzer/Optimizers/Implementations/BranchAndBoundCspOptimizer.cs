@@ -1,7 +1,9 @@
 ﻿#region Using
 
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 
 using LolTeamOptimizer.Optimizers.BaseClasses;
 using LolTeamOptimizer.Optimizers.Calculators;
@@ -36,14 +38,13 @@ namespace LolTeamOptimizer.Optimizers.Implementations
 
         public override TeamValuePair CalculateOptimalePicks(PickingState state)
         {
-            this.bestTeam = new IntTeamValuePair(new List<int>(), int.MinValue);
-
             this.teamSize = state.TeamSize;
             this.enemyChampions = state.EnemyPicks.Select(champ => champ.Id).ToList();
             this.vsPoints = new Dictionary<int, int>();
-
+            
             this.InitiateAvailableChampions(state);
 
+            this.bestTeam = new IntTeamValuePair(new List<int>(), 0);
             this.BranchAndBound(new List<int>(), 0, 0, new List<int>(), 0);
 
             return this.bestTeam.ToTeamValuePair();
@@ -53,6 +54,7 @@ namespace LolTeamOptimizer.Optimizers.Implementations
         {
             if (tiefe == this.teamSize)
             {
+
                 bestTeam.Team = currentTeam.ToList();
                 this.bestTeam.TeamValue = synergies + strenghts;
                 return;
