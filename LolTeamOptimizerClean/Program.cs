@@ -20,35 +20,33 @@ namespace LolTeamOptimizerClean
 
             var championsCountsToTest = new List<int> { 25, 50, 75, 100, 125, 150, 200, 250, 300, 350, 400, 450, 500, 600, 700, 800, 900, 1000, 1250, 1500 };
 
+            var random = new Random();
+            var stopWatch = new Stopwatch();
+
             foreach (var championsCount in championsCountsToTest)
             {
                 Console.WriteLine("#################");
                 Console.WriteLine("Generate relations for {0} Champions", championsCount);
 
-                var relations = RelationsGenerator.GenerateRelations(championsCount);
-
-                var bnbOptimizer = new BranchAndBoundOptimizer(relations, TeamSize);
-                var soOptimizer = new SwitchOutOptimizer(relations, TeamSize);
-
-                var stopWatch = new Stopwatch();
-
                 Console.WriteLine("Teste {0} : ", championsCount);
 
                 var timebnb = 0.0;
                 var timeso = 0.0;
-
                 var abweichung = 0;
 
-                var checkCalculator = new TeamValueCalculator(relations);
-
-                var random = new Random();
-
-                for (var j = 0; j < 10; j++)
+                for (var i = 0; i < 2; i++)
                 {
-                    var enemies = GetRandomEnemies(championsCount, random, TeamSize);
+                    var relations = RelationsGenerator.GenerateRelations(championsCount);
 
-                    for (var i = 0; i < 2; i++)
+                    var bnbOptimizer = new BranchAndBoundOptimizer(relations, TeamSize);
+                    var soOptimizer = new SwitchOutOptimizer(relations, TeamSize);
+
+                    var checkCalculator = new TeamValueCalculator(relations);
+
+                    for (var j = 0; j < 10; j++)
                     {
+                        var enemies = GetRandomEnemies(championsCount, random, TeamSize);
+
                         stopWatch.Start();
                         var resultbnb = bnbOptimizer.FindBestTeam(enemies);
                         stopWatch.Stop();
@@ -64,6 +62,7 @@ namespace LolTeamOptimizerClean
                         stopWatch.Reset();
 
                         abweichung += checkCalculator.CalculateTeamValue(resultbnb, enemies) - checkCalculator.CalculateTeamValue(resulso, enemies);
+
                     }
                 }
 
