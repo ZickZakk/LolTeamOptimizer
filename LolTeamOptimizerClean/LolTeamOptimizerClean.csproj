@@ -44,7 +44,6 @@
     <Compile Include="Calculators\BaseCalculator.cs" />
     <Compile Include="Calculators\ChampionValueCalculator.cs" />
     <Compile Include="Calculators\TeamValueCalculator.cs" />
-    <Compile Include="Common\TeamValuePair.cs" />
     <Compile Include="Optimizers\BaseOptimizer.cs" />
     <Compile Include="Optimizers\BranchAndBoundOptimizer.cs" />
     <Compile Include="Optimizers\IOptimizer.cs" />

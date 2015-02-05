@@ -1,9 +1,14 @@
-﻿using System.Collections.Concurrent;
+﻿#region Using
+
+using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 
-using LolTeamOptimizerClean.Common;
 using LolTeamOptimizerClean.Relations;
+
+#endregion
 
 namespace LolTeamOptimizerClean.Optimizers
 {
@@ -22,27 +27,31 @@ namespace LolTeamOptimizerClean.Optimizers
 
             this.InitiateAvailableChampions(enemies);
 
-            this.team = this.CalculateTeam(this.AvailableChampions.Take(TeamSize).ToList());
+            this.team = this.CalculateTeam(this.AvailableChampions.Take(this.TeamSize).ToList());
+
+            Action<List<int>, ConcurrentBag<SwitchOut>> loopAction;
+
+            if (this.AvailableChampions.Count > 12500)
+            {
+                loopAction = (curentTeam, switchOuts) => Parallel.ForEach(this.AvailableChampions.Except(curentTeam), champ => this.FindPossibleSwitchOuts(champ, curentTeam, switchOuts));
+            }
+            else
+            {
+                loopAction = (curentTeam, switchOuts) =>
+                    {
+                        foreach (var champ in this.AvailableChampions.Except(curentTeam))
+                        {
+                            this.FindPossibleSwitchOuts(champ, curentTeam, switchOuts);
+                        }
+                    };
+            }
 
             while (true)
             {
-                var switchOuts = new List<SwitchOut>();
-                var curentTeam = team.Select(x => x.Champion).ToList();
+                var switchOuts = new ConcurrentBag<SwitchOut>();
+                var curentTeam = this.team.Select(x => x.Champion).ToList();
 
-                foreach (var champ in this.AvailableChampions.Except(curentTeam))
-                {
-                    for (int mateId = 0; mateId < TeamSize; mateId++)
-                    {
-                        var mate = team[mateId];
-
-                        var newValue = this.VersusPoints[champ] + this.Calculator.CalculateSynergy(champ, curentTeam.Where(id => id != mate.Champion).ToList());
-
-                        if (newValue > mate.Value)
-                        {
-                            switchOuts.Add(new SwitchOut { NewMate = new ChampionValuePair {Champion = champ, Value = newValue}, ReplaceId = mateId });
-                        }
-                    }
-                }
+                loopAction(curentTeam, switchOuts);
 
                 if (switchOuts.Count == 0)
                 {
@@ -51,13 +60,28 @@ namespace LolTeamOptimizerClean.Optimizers
 
                 var bestSwitchOut = switchOuts.OrderByDescending(switchOut => switchOut.NewMate.Value).First();
 
-                team.RemoveAt(bestSwitchOut.ReplaceId);
-                team.Add(bestSwitchOut.NewMate);
+                this.team.RemoveAt(bestSwitchOut.ReplaceId);
+                this.team.Add(bestSwitchOut.NewMate);
 
-                team = CalculateTeam(team.Select(pair => pair.Champion).ToList());
+                this.team = this.CalculateTeam(this.team.Select(pair => pair.Champion).ToList());
             }
 
-            return team.Select(pair => pair.Champion).ToList();
+            return this.team.Select(pair => pair.Champion).ToList();
+        }
+
+        private void FindPossibleSwitchOuts(int champ, List<int> curentTeam, ConcurrentBag<SwitchOut> switchOuts)
+        {
+            for (var mateId = 0; mateId < this.TeamSize; mateId++)
+            {
+                var mate = this.team[mateId];
+
+                var newValue = this.VersusPoints[champ] + this.Calculator.CalculateSynergy(champ, curentTeam.Where(id => id != mate.Champion).ToList());
+
+                if (newValue > mate.Value)
+                {
+                    switchOuts.Add(new SwitchOut { NewMate = new ChampionValuePair { Champion = champ, Value = newValue }, ReplaceId = mateId });
+                }
+            }
         }
 
         private IList<ChampionValuePair> CalculateTeam(IList<int> champs)
@@ -72,18 +96,18 @@ namespace LolTeamOptimizerClean.Optimizers
             return valuePairs.OrderByDescending(pair => pair.Value).ToList();
         }
 
-        private class SwitchOut
-        {
-            public int ReplaceId { get; set; }
-
-            public ChampionValuePair NewMate { get; set; }
-        }
-
         private class ChampionValuePair
         {
             public int Champion { get; set; }
 
             public int Value { get; set; }
+        }
+
+        private class SwitchOut
+        {
+            public int ReplaceId { get; set; }
+
+            public ChampionValuePair NewMate { get; set; }
         }
     }
 }

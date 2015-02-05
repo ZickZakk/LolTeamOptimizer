@@ -1,7 +1,11 @@
-﻿using System.Collections.Generic;
+﻿#region Using
+
+using System.Collections.Generic;
 using System.Linq;
 
 using LolTeamOptimizerClean.Relations;
+
+#endregion
 
 namespace LolTeamOptimizerClean.Calculators
 {
@@ -24,17 +28,17 @@ namespace LolTeamOptimizerClean.Calculators
 
         private int CalculateNotWeaknesses(int champ, IEnumerable<int> enemyChamps)
         {
-            return enemyChamps.Count(enemyChamp => !RelationsState.Weaknesses[champ, enemyChamp]);
+            return enemyChamps.Count(enemyChamp => !this.RelationsState.Weaknesses[champ, enemyChamp]);
         }
 
         private int CalculateStrenghts(int champ, IEnumerable<int> enemyChamps)
         {
-            return enemyChamps.Count(enemyChamp => RelationsState.Strengths[champ, enemyChamp]);
+            return enemyChamps.Count(enemyChamp => this.RelationsState.Strengths[champ, enemyChamp]);
         }
 
         private int CalculateSynergies(IList<int> champs)
         {
-            return (from champ in champs from otherChamp in champs.Where(id => id != champ) where RelationsState.Synergies[champ, otherChamp] select champ).Count();
+            return (from champ in champs from otherChamp in champs.Where(id => id != champ) where this.RelationsState.Synergies[champ, otherChamp] select champ).Count();
         }
     }
 }

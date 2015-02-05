@@ -18,7 +18,9 @@ namespace LolTeamOptimizerClean
         {
             const int TeamSize = 5;
 
-            for (int championsCount = 50; championsCount <= 1000; championsCount += 50)
+            var championsCountsToTest = new List<int> { 25, 50, 75, 100, 125, 150, 200, 250, 300, 350, 400, 450, 500, 600, 700, 800, 900, 1000, 1250, 1500 };
+
+            foreach (var championsCount in championsCountsToTest)
             {
                 Console.WriteLine("#################");
                 Console.WriteLine("Generate relations for {0} Champions", championsCount);

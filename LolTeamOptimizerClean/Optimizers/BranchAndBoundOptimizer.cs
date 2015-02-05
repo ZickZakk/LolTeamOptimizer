@@ -3,7 +3,6 @@
 using System.Collections.Generic;
 using System.Linq;
 
-using LolTeamOptimizerClean.Common;
 using LolTeamOptimizerClean.Relations;
 
 #endregion
@@ -31,7 +30,7 @@ namespace LolTeamOptimizerClean.Optimizers
 
         private void BranchAndBound(IList<int> currentTeam, int synergies, int strenghts, IList<int> usedChampions, int tiefe)
         {
-            if (tiefe == TeamSize)
+            if (tiefe == this.TeamSize)
             {
                 this.bestTeam.Champions = currentTeam;
                 this.bestTeam.Value = synergies + strenghts;
@@ -47,13 +46,13 @@ namespace LolTeamOptimizerClean.Optimizers
                 var currentTeamSynergy = synergies + this.Calculator.CalculateSynergy(alternativerChamp, currentTeam);
 
                 // Calc possible Synergies
-                var possibleAdditionalTeamSynergy = TeamSize * (TeamSize - 1) - currentTeamSize * (currentTeamSize - 1);
+                var possibleAdditionalTeamSynergy = this.TeamSize * (this.TeamSize - 1) - currentTeamSize * (currentTeamSize - 1);
 
                 // Calc versusPoints with new champ
                 var currentTeamStrengths = strenghts + this.VersusPoints[alternativerChamp];
 
                 // Add possible Strenghts & NotWeaknesses
-                var possibleAdditionalTeamStrength = alternativeChamps.SkipWhile(id => id != alternativerChamp).Except(currentTeam).Take(TeamSize - currentTeamSize).Select(id => this.VersusPoints[id]).Sum();
+                var possibleAdditionalTeamStrength = alternativeChamps.SkipWhile(id => id != alternativerChamp).Except(currentTeam).Take(this.TeamSize - currentTeamSize).Select(id => this.VersusPoints[id]).Sum();
 
                 var currentTeamValue = currentTeamSynergy + possibleAdditionalTeamSynergy + currentTeamStrengths + possibleAdditionalTeamStrength;
 
@@ -75,6 +74,13 @@ namespace LolTeamOptimizerClean.Optimizers
             var unavailableChampions = champions.Union(usedChampions);
 
             return this.AvailableChampions.Except(unavailableChampions);
+        }
+
+        private class TeamValuePair
+        {
+            public IList<int> Champions { get; set; }
+
+            public int Value { get; set; }
         }
     }
 }
