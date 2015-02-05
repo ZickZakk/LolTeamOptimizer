@@ -3,6 +3,7 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.IO;
 
 using LolTeamOptimizerClean.Calculators;
 using LolTeamOptimizerClean.Optimizers;
@@ -22,6 +23,7 @@ namespace LolTeamOptimizerClean
 
             var random = new Random();
             var stopWatch = new Stopwatch();
+            var fileName = DateTime.Now.ToString().Replace(" ", "_").Replace(":", ".") + ".csv";
 
             foreach (var championsCount in championsCountsToTest)
             {
@@ -30,9 +32,8 @@ namespace LolTeamOptimizerClean
 
                 Console.WriteLine("Teste {0} : ", championsCount);
 
-                var timebnb = 0.0;
-                var timeso = 0.0;
-                var abweichung = 0;
+                File.AppendAllText(fileName, championsCount + Environment.NewLine);
+                File.AppendAllText(fileName, String.Join(";", "BnB", "SwO", "Abweichung") + Environment.NewLine);
 
                 for (var i = 0; i < 2; i++)
                 {
@@ -51,23 +52,23 @@ namespace LolTeamOptimizerClean
                         var resultbnb = bnbOptimizer.FindBestTeam(enemies);
                         stopWatch.Stop();
 
-                        timebnb += stopWatch.Elapsed.TotalMilliseconds;
+                        var timebnb = stopWatch.Elapsed.TotalMilliseconds;
                         stopWatch.Reset();
 
                         stopWatch.Start();
                         var resulso = soOptimizer.FindBestTeam(enemies);
                         stopWatch.Stop();
 
-                        timeso += stopWatch.Elapsed.TotalMilliseconds;
+                        var timeso = stopWatch.Elapsed.TotalMilliseconds;
                         stopWatch.Reset();
 
-                        abweichung += checkCalculator.CalculateTeamValue(resultbnb, enemies) - checkCalculator.CalculateTeamValue(resulso, enemies);
+                        var abweichung = checkCalculator.CalculateTeamValue(resultbnb, enemies) - checkCalculator.CalculateTeamValue(resulso, enemies);
 
+                        File.AppendAllText(fileName, String.Join(";", timebnb, timeso, abweichung) + Environment.NewLine);
                     }
                 }
 
-                Console.WriteLine("Result for {0} Champions: B&B: {1}", championsCount, timebnb / 20.0);
-                Console.WriteLine("Result for {0} Champions: SWO: {1} | Abweichung: {2}", championsCount, timeso / 20.0, abweichung / 20.0);
+                Console.WriteLine("Done!");
             }
 
             Console.ReadKey();
